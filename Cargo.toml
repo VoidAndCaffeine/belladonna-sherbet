@@ -5,11 +5,18 @@ edition = "2024"
 
 [dependencies]
 bevy = { version = "0.16", default-features = true, features = ["dynamic_linking"] }
+bevy_skein = { version = "0.2", optional = true}
 
 [lints.clippy]
 to_many_arguments = "allow"
 type_complexity = "allow"
 nonstandard_macro_braces = "warn"
+
+[features]
+dev = [
+    "dep:bevy_skein",
+    "bevy_skein/presets"
+]
 
 [profile.dev]
 opt-level = 1

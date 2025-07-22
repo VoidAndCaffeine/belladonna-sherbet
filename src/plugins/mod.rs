@@ -1,6 +1,7 @@
 use bevy::app::{App, Plugin};
 
 mod player;
+pub mod dev;
 
 pub struct GamePlugins;
 impl Plugin for GamePlugins {

@@ -16,5 +16,10 @@ impl Plugin for AppPlugin {
                 default::Default,
                 plugins::GamePlugins,
             ));
+
+        // this is only needed to send components to blender,
+        // thus it is not needed in release builds
+        #[cfg(feature = "dev")]
+        app.add_plugins(plugins::dev::DevPlugins);
     }
 }
