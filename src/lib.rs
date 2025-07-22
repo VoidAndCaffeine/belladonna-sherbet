@@ -5,8 +5,7 @@ mod plugins;
 mod default;
 
 mod prelude{
-    pub use super::*;
-    pub use {plugins::*,};
+    pub use super::{plugins::*,};
 }
 
 pub struct AppPlugin;

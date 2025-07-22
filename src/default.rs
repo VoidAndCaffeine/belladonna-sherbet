@@ -1,4 +1,4 @@
-pub(crate) use bevy::prelude::{App, Plugin, DefaultPlugins};
+use bevy::prelude::{App, Plugin, DefaultPlugins};
 
 pub struct Default;
 impl Plugin for Default {
