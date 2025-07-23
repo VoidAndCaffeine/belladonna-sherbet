@@ -2,14 +2,14 @@ use bevy::app::{App, Plugin};
 
 pub mod player;
 mod dev;
-pub mod asset_manager;
+pub mod asset_managment;
 
 pub struct GamePlugins;
 impl Plugin for GamePlugins {
     fn build(&self, app: &mut App) {
         app
             .add_plugins(player::PlayerPlugin)
-            .add_plugins(asset_manager::AssetManagerPlugin)
+            .add_plugins(asset_managment::AssetManagerPlugin)
         ;
 
         // this is only needed to send components to blender,
