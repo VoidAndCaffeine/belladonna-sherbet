@@ -52,6 +52,8 @@ impl Plugin for AssetManagerPlugin {
         ;
     }
 }
+// not actually necessary
+/*
 
 /// Component to be added to blender empties
 #[derive(Component, Reflect)]
@@ -86,6 +88,7 @@ fn add_gltf_children(
         .remove::<GltfRef>()
         .add_child(child);
 }
+*/
 
 fn unload_current_level(
     mut commands: Commands,
