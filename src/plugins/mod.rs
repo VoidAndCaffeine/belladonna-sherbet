@@ -32,6 +32,6 @@ fn spawn_test_level(
 ){
     *loading_state = LoadingState::Loading;
     commands.spawn(SceneRoot(
-        asset_server.load(GltfAssetLabel::Scene(2).from_asset("belladonna-sherbet.gltf"))
+        asset_server.load(GltfAssetLabel::Scene(1).from_asset("belladonna-sherbet.gltf"))
     ));
 }

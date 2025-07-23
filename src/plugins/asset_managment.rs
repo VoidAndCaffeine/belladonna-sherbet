@@ -40,7 +40,6 @@ impl Plugin for AssetManagerPlugin {
             .add_plugins(PipelinesReadyPlugin)
             .insert_resource(LoadingState::default())
             .insert_resource(LoadingData::new(5))
-            .add_systems(Startup, spawn_test)
             .add_systems(Update, update_loading_data)
         ;
     }
@@ -91,22 +90,6 @@ fn unload_assets<T: bevy::prelude::Component>(
         commands.entity(entity).despawn();
     }
 }
-
-fn spawn_test(
-    mut commands: Commands,
-    mut loading_data: ResMut<LoadingData>,
-    asset_server: Res<AssetServer>
-) {
-    let test
-        = asset_server.load(GltfAssetLabel::Scene(1).from_asset("belladonna-sherbet.gltf"));
-    loading_data.loading_assets.push(test.clone().into());
-    commands.spawn((
-        SceneRoot(test.clone()),
-        LevelComponent
-    ));
-}
-
-
 
 fn update_loading_data(
     mut loading_data: ResMut<LoadingData>,
