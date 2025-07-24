@@ -4,11 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-bevy = { version = "0.16", default-features = true, features = ["dynamic_linking"] }
+bevy = { version = "0.16" }
 bevy_skein = { version = "0.2", optional = true}
 avian3d = "0.3"
-bevy-tnua = "0.24"
-bevy-tnua-avian3d = "0.5"
 
 [lints.clippy]
 to_many_arguments = "allow"
@@ -18,7 +16,14 @@ nonstandard_macro_braces = "warn"
 [features]
 dev = [
     "dep:bevy_skein",
-    "bevy_skein/presets"
+    "bevy_skein/presets",
+    "bevy/dynamic_linking",
+    "bevy/bevy_dev_tools",
+    "bevy/bevy_ui_debug",
+    # Improve error messages coming from Bevy
+    "bevy/track_location",
+]
+tracing = [
 ]
 
 [profile.dev]
