@@ -1,5 +1,7 @@
-use avian3d::prelude::{Collider, LockedAxes, RigidBody};
+use avian3d::math::Scalar;
+use avian3d::prelude::{CoefficientCombine, Collider, Friction, LockedAxes, Restitution, RigidBody};
 use bevy::prelude::*;
+use crate::plugins::player_controler::CharacterControllerBundle;
 use crate::prelude::asset_managment::LoadingData;
 
 #[derive(Component, Reflect)]
@@ -27,17 +29,21 @@ fn spawn_player(
     mut loading_data: ResMut<LoadingData>,
     asset_server: Res<AssetServer>,
 ) {
-    let transform = query.get(trigger.target()).unwrap();
+    let transform = *query.get(trigger.target()).unwrap();
     info!("spawning player");
     let child
         = asset_server.load(GltfAssetLabel::Scene(0).from_asset("belladonna-sherbet.gltf"));
     loading_data.loading_assets.push(child.clone().into());
     commands.spawn((
         SceneRoot(child),
-        *transform,
+        transform,
         Player,
-        RigidBody::Dynamic,
-        LockedAxes::ROTATION_LOCKED.unlock_rotation_y(),
+        CharacterControllerBundle::new().with_movement(
+            30.0,
+            0.92,
+        ),
+        Friction::ZERO.with_combine_rule(CoefficientCombine::Min),
+        Restitution::ZERO.with_combine_rule(CoefficientCombine::Min),
         ));
 }
 

@@ -4,10 +4,13 @@ use bevy::gltf::GltfAssetLabel;
 use bevy::prelude::{Commands, NextState, Res, ResMut};
 use bevy::scene::SceneRoot;
 use crate::plugins::asset_managment::LoadingState;
+use crate::prelude::asset_managment::LevelComponent;
 
 pub mod player;
 pub mod asset_managment;
 mod dev;
+mod player_controler;
+mod input_manager;
 
 pub struct GamePlugins;
 impl Plugin for GamePlugins {
@@ -15,6 +18,8 @@ impl Plugin for GamePlugins {
         app
             .add_plugins(player::PlayerPlugin)
             .add_plugins(asset_managment::AssetManagerPlugin)
+            .add_plugins(input_manager::InputManagerPlugin)
+            .add_plugins(player_controler::CharacterControllerPlugin)
             .add_systems(Startup, spawn_test_level)
         ;
 
@@ -31,7 +36,9 @@ fn spawn_test_level(
     mut loading_state: ResMut<LoadingState>,
 ){
     *loading_state = LoadingState::Loading;
-    commands.spawn(SceneRoot(
-        asset_server.load(GltfAssetLabel::Scene(1).from_asset("belladonna-sherbet.gltf"))
-    ));
+    commands.spawn((
+        LevelComponent,
+        SceneRoot(
+            asset_server.load(GltfAssetLabel::Scene(1).from_asset("belladonna-sherbet.gltf")),
+    )));
 }

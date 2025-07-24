@@ -5,7 +5,7 @@ use pipelines_ready::*;
 use crate::plugins::asset_managment::LoadingState::Loading;
 
 #[derive(Component)]
-struct LevelComponent;
+pub struct LevelComponent;
 
 #[derive(Resource, Default)]
 pub enum LoadingState {
@@ -80,8 +80,6 @@ fn add_gltf_children(
         .remove::<GltfRef>()
         .add_child(child);
 }
-*/
-
 fn unload_assets<T: bevy::prelude::Component>(
     mut commands: Commands,
     entities: Query<Entity, With<T>>,
@@ -90,6 +88,8 @@ fn unload_assets<T: bevy::prelude::Component>(
         commands.entity(entity).despawn();
     }
 }
+*/
+
 
 fn update_loading_data(
     mut loading_data: ResMut<LoadingData>,
