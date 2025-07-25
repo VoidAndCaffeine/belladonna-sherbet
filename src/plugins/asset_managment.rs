@@ -7,7 +7,7 @@ use crate::prelude::{game::GameState, asset_managment::LoadingState::Loading};
 #[derive(Component)]
 struct LevelComponent;
 
-#[derive(Resource, Default)]
+#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum LoadingState {
     #[default]
     Loading,
@@ -38,7 +38,7 @@ impl Plugin for AssetManagerPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugins(PipelinesReadyPlugin)
-            .insert_resource(LoadingState::default())
+            .init_state::<LoadingState>()
             .insert_resource(LoadingData::new(5))
             .add_systems(Update, update_loading_data)
         ;
@@ -93,8 +93,8 @@ fn unload_assets<T: bevy::prelude::Component>(
 
 fn update_loading_data(
     mut loading_data: ResMut<LoadingData>,
-    mut next_loading_state: ResMut<NextState<LoadingState>>,
-    mut next_game_state: ResMut<NextState<GameState>>,
+    mut loading_state: ResMut<NextState<LoadingState>>,
+    mut game_state: ResMut<NextState<GameState>>,
     asset_server: Res<AssetServer>,
     pipelines_ready: Res<PipelinesReady>,
 ){
@@ -110,8 +110,8 @@ fn update_loading_data(
         loading_data.confirmation_frames_count += 1;
         if loading_data.confirmation_frames_count
             == loading_data.confirmation_frames_target {
-            next_loading_state.set(LoadingState::Ready);
-            next_game_state.set(GameState::InGame);
+            loading_state.set(LoadingState::Ready);
+            game_state.set(GameState::InGame);
             info!("Loaded all assets");
         }
     }

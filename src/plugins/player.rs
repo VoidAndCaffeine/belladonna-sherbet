@@ -1,8 +1,12 @@
 use avian3d::prelude::{Collider, LockedAxes, RigidBody};
+use bevy::core_pipeline::bloom::Bloom;
+use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::prelude::*;
+use bevy::render::camera::PhysicalCameraParameters;
 use bevy_tnua::prelude::{TnuaBuiltinJump, TnuaBuiltinWalk, TnuaController};
 use bevy_tnua::TnuaUserControlsSystemSet;
 use bevy_tnua_avian3d::TnuaAvian3dSensorShape;
+use crate::plugins::camera::PlayerCamera;
 use crate::plugins::input::InputAction;
 use crate::prelude::asset_managment::LoadingData;
 
@@ -44,6 +48,15 @@ fn spawn_player(
         RigidBody::Dynamic,
         TnuaController::default(),
         LockedAxes::ROTATION_LOCKED.unlock_rotation_y(),
+        ));
+    commands.spawn((
+        PlayerCamera,
+        Camera3d::default(),
+        Camera {
+            hdr: true,
+            ..default()
+        },
+        Tonemapping::TonyMcMapface,
         ));
 }
 fn apply_movement(

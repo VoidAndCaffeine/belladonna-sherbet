@@ -14,7 +14,7 @@ impl Plugin for AppPlugin {
         app
             .add_plugins((
                 default::Default,
-                plugins::GamePlugins,
+                plugins::game::GamePlugins,
             ));
 
     }
