@@ -2,7 +2,7 @@ use bevy::ecs::system::SystemId;
 use bevy::prelude::*;
 use std::collections::VecDeque;
 use pipelines_ready::*;
-use crate::plugins::asset_managment::LoadingState::Loading;
+use crate::prelude::{game::GameState, asset_managment::LoadingState::Loading};
 
 #[derive(Component)]
 struct LevelComponent;
@@ -93,7 +93,8 @@ fn unload_assets<T: bevy::prelude::Component>(
 
 fn update_loading_data(
     mut loading_data: ResMut<LoadingData>,
-    mut loading_state: ResMut<LoadingState>,
+    mut next_loading_state: ResMut<NextState<LoadingState>>,
+    mut next_game_state: ResMut<NextState<GameState>>,
     asset_server: Res<AssetServer>,
     pipelines_ready: Res<PipelinesReady>,
 ){
@@ -109,7 +110,8 @@ fn update_loading_data(
         loading_data.confirmation_frames_count += 1;
         if loading_data.confirmation_frames_count
             == loading_data.confirmation_frames_target {
-            *loading_state = LoadingState::Ready;
+            next_loading_state.set(LoadingState::Ready);
+            next_game_state.set(GameState::InGame);
             info!("Loaded all assets");
         }
     }
