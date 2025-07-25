@@ -1,8 +1,9 @@
 use avian3d::prelude::{Collider, LockedAxes, RigidBody};
+use bevy::core_pipeline::auto_exposure::AutoExposure;
 use bevy::core_pipeline::bloom::Bloom;
 use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::prelude::*;
-use bevy::render::camera::PhysicalCameraParameters;
+use bevy::render::camera::{Exposure, PhysicalCameraParameters};
 use bevy_tnua::prelude::{TnuaBuiltinJump, TnuaBuiltinWalk, TnuaController};
 use bevy_tnua::TnuaUserControlsSystemSet;
 use bevy_tnua_avian3d::TnuaAvian3dSensorShape;
@@ -57,6 +58,7 @@ fn spawn_player(
             ..default()
         },
         Tonemapping::TonyMcMapface,
+        Bloom::NATURAL,
         ));
 }
 fn apply_movement(
