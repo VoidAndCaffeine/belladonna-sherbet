@@ -9,6 +9,13 @@ use crate::prelude::{game::GameState, asset_managment::LoadingState::Loading};
 pub struct LevelComponent;
 
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
+pub enum LoadingType{
+    LoadingGame,
+    #[default]
+    LoadingMainMenu,
+}
+
+#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum LoadingState {
     #[default]
     Loading,
@@ -45,14 +52,17 @@ impl Plugin for AssetManagerPlugin {
             .register_type::<LightNeedsShadows>()
             .insert_resource(LoadingData::new(5))
             .init_state::<LoadingState>()
+            .init_state::<LoadingType>()
             .add_observer(add_shadows_to_lights)
             .add_plugins(PipelinesReadyPlugin)
+            .add_systems(Startup, load_loading_screen)
+            .add_systems(Update, display_loading_screen)
             .add_systems(Update, update_loading_data)
         ;
     }
 }
 
-fn _unload_assets<T: bevy::prelude::Component>(
+pub fn unload_assets<T: bevy::prelude::Component>(
     mut commands: Commands,
     entities: Query<Entity, With<T>>,
 ) {
@@ -64,6 +74,7 @@ fn _unload_assets<T: bevy::prelude::Component>(
 fn update_loading_data(
     mut loading_data: ResMut<LoadingData>,
     mut loading_state: ResMut<NextState<LoadingState>>,
+    loading_type: ResMut<State<LoadingType>>,
     mut game_state: ResMut<NextState<GameState>>,
     asset_server: Res<AssetServer>,
     pipelines_ready: Res<PipelinesReady>,
@@ -81,7 +92,10 @@ fn update_loading_data(
         if loading_data.confirmation_frames_count
             == loading_data.confirmation_frames_target {
             loading_state.set(LoadingState::Ready);
-            game_state.set(GameState::InGame);
+            match loading_type.get() {
+                LoadingType::LoadingGame => {game_state.set(GameState::InGame)}
+                LoadingType::LoadingMainMenu => {game_state.set(GameState::MainMenu)}
+            }
             info!("Loaded all assets");
         }
     }
@@ -94,6 +108,51 @@ fn add_shadows_to_lights(
     let Ok(mut light) = query.get_mut(trigger.target()) else {return;};
     info!("Setting shadows on light");
     light.shadows_enabled = true;
+}
+
+#[derive(Component,Default)]
+struct LoadingScreenComponent;
+
+#[derive(Component)]
+#[require(Camera2d)]
+#[require(LoadingScreenComponent)]
+struct LoadingScreenCamera;
+fn load_loading_screen(mut commands: Commands){
+    let text_style = TextFont{
+        font_size: 67.0,
+        ..default()
+    };
+
+    commands.spawn((
+        LoadingScreenCamera,
+        Camera{
+            order: 99,
+            ..default()
+        },
+    ));
+    commands.spawn((
+        LoadingScreenComponent,
+        Node {
+            height: Val::Percent(100.0),
+            width: Val::Percent(100.0),
+            justify_content: JustifyContent::Center,
+            align_items: AlignItems::Center,
+            ..default()
+        },
+        BackgroundColor(Color::BLACK),
+        children![(Text::new("Loading"), text_style)],
+    ));
+}
+
+fn display_loading_screen(
+    mut loading_screen: Single<&mut Visibility, (With<LoadingScreenComponent>, With<Node>)>,
+    loading_state: Res<State<LoadingState>>,
+){
+    let visibility = match loading_state.get() {
+        LoadingState::Loading => Visibility::Visible,
+        LoadingState::Ready => Visibility::Hidden,
+    };
+    **loading_screen = visibility;
 }
 
 mod pipelines_ready {

@@ -53,6 +53,7 @@ fn spawn_player(
     commands.spawn((
         PlayerCamera,
         Camera {
+            order:100,
             hdr: true,
             ..default()
         },

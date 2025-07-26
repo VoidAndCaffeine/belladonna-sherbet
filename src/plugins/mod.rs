@@ -5,3 +5,4 @@ pub mod input;
 pub mod game;
 mod pause;
 mod camera;
+mod main_menu;

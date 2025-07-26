@@ -23,23 +23,10 @@ impl Plugin for CameraPlugin {
 }
 
 fn update_camera_pos(
-    mut player_query: Query<&Transform, With<Player>>,
-    mut camera_query: Query<&mut Transform,( With<Camera>, Without<Player>)>,
+    player_transform: Single<&Transform, With<Player>>,
+    mut camera_transform: Single<&mut Transform,(With<PlayerCamera>, Without<Player>)>,
 ) {
-    let Ok(player_transform) = player_query.single_mut()
-    else {
-        error!("Error getting global transform");
-        return;
-    };
-
-    let Ok(mut camera_transform) = camera_query.single_mut()
-    else {
-        error!("No Cameras Found");
-        return;
-    };
-
-    camera_transform.translation
-        = player_transform.translation + CAMERA_DISTANCE * CAMERA_VECTOR;
-    camera_transform.look_at(player_transform.translation,Vec3::Y);
-
+    camera_transform.translation =
+        player_transform.translation + CAMERA_DISTANCE * CAMERA_VECTOR;
+    camera_transform.look_at(player_transform.translation, Vec3::Y);
 }
