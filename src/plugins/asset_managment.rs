@@ -1,6 +1,7 @@
 use bevy::ecs::system::SystemId;
 use bevy::prelude::*;
 use std::collections::VecDeque;
+use avian3d::parry::either::IntoEither;
 use pipelines_ready::*;
 use crate::prelude::{game::GameState, asset_managment::LoadingState::Loading};
 
@@ -22,6 +23,10 @@ pub struct LoadingData {
     confirmation_frames_count: usize,
 }
 
+#[derive(Component,Reflect)]
+#[reflect(Component)]
+struct LightNeedsShadows;
+
 impl LoadingData {
     fn new(confirmation_frames_target: usize) -> Self {
         Self {
@@ -37,50 +42,15 @@ pub struct AssetManagerPlugin;
 impl Plugin for AssetManagerPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugins(PipelinesReadyPlugin)
-            .init_state::<LoadingState>()
+            .register_type::<LightNeedsShadows>()
             .insert_resource(LoadingData::new(5))
+            .init_state::<LoadingState>()
+            .add_observer(add_shadows_to_lights)
+            .add_plugins(PipelinesReadyPlugin)
             .add_systems(Update, update_loading_data)
         ;
     }
 }
-// not actually necessary
-/*
-
-/// Component to be added to blender empties
-#[derive(Component, Reflect)]
-#[reflect(Component)]
-pub struct GltfRef {
-    collection: String,
-}
-
-/// system that replaces gltf ref links
-fn add_gltf_children(
-    trigger: Trigger<OnAdd, GltfRef>,
-    query: Query<(&GltfRef, &Transform)>,
-    mut commands: Commands,
-    mut loading_data: ResMut<LoadingData>,
-    asset_server: Res<AssetServer>,
-) {
-    let gltf_ref = query.get(trigger.target()).unwrap();
-    let file = format!("blender/{}.glb", gltf_ref.0.collection);
-
-    info!("loading {}.glb",gltf_ref.0.collection);
-    let child = asset_server.load(GltfAssetLabel::Scene(0).from_asset(file));
-    loading_data.loading_assets.push(child.clone().into());
-    let child = commands
-        .spawn((
-            SceneRoot(child.clone()),
-            *gltf_ref.1,
-        ))
-        .id();
-
-    commands
-        .entity(trigger.target())
-        .remove::<GltfRef>()
-        .add_child(child);
-}
-*/
 
 fn unload_assets<T: bevy::prelude::Component>(
     mut commands: Commands,
@@ -115,6 +85,15 @@ fn update_loading_data(
             info!("Loaded all assets");
         }
     }
+}
+
+fn add_shadows_to_lights(
+    trigger: Trigger<OnAdd, PointLight>,
+    mut query: Query<&mut PointLight, With<LightNeedsShadows>>,
+){
+    let Ok(mut light) = query.get_mut(trigger.target()) else {return;};
+    info!("Setting shadows on light");
+    light.shadows_enabled = true;
 }
 
 mod pipelines_ready {

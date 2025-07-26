@@ -52,7 +52,6 @@ fn spawn_player(
         ));
     commands.spawn((
         PlayerCamera,
-        Camera3d::default(),
         Camera {
             hdr: true,
             ..default()

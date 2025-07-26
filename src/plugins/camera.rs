@@ -13,6 +13,7 @@ const CAMERA_VECTOR:Vec3= Vec3::new(0.0,1.0,1.0);
 
 #[derive(Component,Reflect)]
 #[reflect(Component)]
+#[require(Camera3d)]
 pub(crate) struct PlayerCamera;
 
 pub(crate) struct CameraPlugin;
