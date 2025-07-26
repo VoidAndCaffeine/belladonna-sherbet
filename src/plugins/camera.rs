@@ -2,12 +2,6 @@ use bevy::prelude::*;
 use crate::plugins::game::GameState;
 use crate::plugins::player::Player;
 
-#[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
-enum CameraState{
-    Static,
-    #[default]
-    Dynamic,
-}
 const CAMERA_DISTANCE:f32 = 15.0;
 const CAMERA_VECTOR:Vec3= Vec3::new(0.0,1.0,1.0);
 
@@ -21,17 +15,14 @@ impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app
             .register_type::<PlayerCamera>()
-            .init_state::<CameraState>()
             .add_systems(Update, update_camera_pos
                 .run_if(in_state(GameState::InGame))
-                .run_if(in_state(CameraState::Dynamic))
             )
         ;
     }
 }
 
 fn update_camera_pos(
-    camera_state: Res<State<CameraState>>,
     mut player_query: Query<&Transform, With<Player>>,
     mut camera_query: Query<&mut Transform,( With<Camera>, Without<Player>)>,
 ) {

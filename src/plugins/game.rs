@@ -2,6 +2,7 @@ use bevy::app::{App, Plugin, Startup};
 use bevy::prelude::*;
 use crate::plugins::{camera, pause};
 use crate::prelude::*;
+use crate::prelude::asset_managment::LevelComponent;
 
 //TODO: move loading to in game to loading screen
 // currently set in asset_management, update_loading_data
@@ -38,7 +39,9 @@ fn spawn_test_level(
     mut loading_state: ResMut<NextState<asset_managment::LoadingState>>,
 ){
     loading_state.set( asset_managment::LoadingState::Loading);
-    commands.spawn(SceneRoot(
+    commands.spawn((
+        LevelComponent,
+        SceneRoot(
         asset_server.load(GltfAssetLabel::Scene(1).from_asset("belladonna-sherbet.gltf"))
-    ));
+    )));
 }

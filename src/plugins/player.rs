@@ -77,7 +77,7 @@ fn apply_movement(
                 direction.x = axis.x;
                 direction.z = axis.y;
             }
-            _ => {}
+            //_ => {}
         }
     }
 

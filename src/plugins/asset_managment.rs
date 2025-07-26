@@ -6,7 +6,7 @@ use pipelines_ready::*;
 use crate::prelude::{game::GameState, asset_managment::LoadingState::Loading};
 
 #[derive(Component)]
-struct LevelComponent;
+pub struct LevelComponent;
 
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum LoadingState {
@@ -52,7 +52,7 @@ impl Plugin for AssetManagerPlugin {
     }
 }
 
-fn unload_assets<T: bevy::prelude::Component>(
+fn _unload_assets<T: bevy::prelude::Component>(
     mut commands: Commands,
     entities: Query<Entity, With<T>>,
 ) {

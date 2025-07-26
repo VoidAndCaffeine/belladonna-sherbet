@@ -14,7 +14,6 @@ impl Plugin for InputManagerPlugin {
 #[derive(Event)]
 pub enum InputAction{
     MoveAxis(Vec2),
-    CamAxis(Vec2)
 }
 
 fn keyboard_input(
