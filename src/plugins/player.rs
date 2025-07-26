@@ -1,7 +1,7 @@
 use avian3d::prelude::{Collider, LockedAxes, RigidBody};
 use bevy::core_pipeline::auto_exposure::AutoExposure;
 use bevy::core_pipeline::bloom::Bloom;
-use bevy::core_pipeline::tonemapping::Tonemapping;
+use bevy::pbr::Atmosphere;
 use bevy::prelude::*;
 use bevy::render::camera::{Exposure, PhysicalCameraParameters};
 use bevy_tnua::prelude::{TnuaBuiltinJump, TnuaBuiltinWalk, TnuaController};
@@ -57,7 +57,10 @@ fn spawn_player(
             hdr: true,
             ..default()
         },
-        Tonemapping::TonyMcMapface,
+        AmbientLight{
+            brightness: 0.00,
+            ..default()
+        },
         Bloom::NATURAL,
         ));
 }
