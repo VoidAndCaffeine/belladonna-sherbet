@@ -1,0 +1,47 @@
+[package]
+name = "belladonna-sherbet"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { version = "0.16", default-features = true, features = ["dynamic_linking"] }
+avian3d = "0.3"
+bevy-tnua = "0.24"
+bevy-tnua-avian3d = "0.5"
+
+bevy_skein = { version = "0.2", optional = true}
+bevy-inspector-egui = {version = "0.32", optional = true}
+egui = {version = "0.31", optional = true}
+bevy_egui = {version = "0.35.0", default-features = false, optional = true}
+egui_dock = { version = "0.16", optional = true }
+transform-gizmo-egui = { version = "0.6", optional = true }
+
+
+
+[lints.clippy]
+to_many_arguments = "allow"
+type_complexity = "allow"
+nonstandard_macro_braces = "warn"
+
+[features]
+dev = [
+    "dep:bevy_skein",
+    "bevy_skein/presets",
+    "dep:bevy-inspector-egui",
+    "dep:bevy_egui",
+    "dep:egui_dock",
+    "dep:transform-gizmo-egui",
+    "dep:egui",
+]
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+codegen-units = 1
+lto = true
+strip = true
+opt-level = 3
