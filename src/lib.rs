@@ -7,9 +7,9 @@ pub struct AppPlugin;
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugins((
-                default::Default,
-                plugins::game::GamePlugins
-                ));
+            .add_plugins(default::Default)
+            .add_plugins(plugins::game::GamePlugins)
+            .add_plugins(plugins::dev::dev::DevPlugins)
+        ;
     }
 }
