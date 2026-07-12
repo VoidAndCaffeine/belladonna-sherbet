@@ -10,8 +10,11 @@ impl Plugin for AppPlugin {
             .add_plugins(default::Default)
             .add_plugins(plugins::game::GamePlugins);
 
-        if cfg!(debug_assertions) {
-            app.add_plugins(plugins::dev::dev::DevPlugins);
-        }
+        #[cfg(feature = "dev-tools")]
+        app
+            .add_plugins(bevy_inspector_egui::bevy_egui::EguiPlugin::default())
+            .add_plugins(bevy_inspector_egui::quick::WorldInspectorPlugin::default())
+            .add_plugins(bevy_skein::SkeinPlugin::default());
+        ;
     }
 }
