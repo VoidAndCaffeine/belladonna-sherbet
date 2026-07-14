@@ -1,6 +1,6 @@
 use bevy::app::*;
 use bevy::prelude::*;
-use crate::plugins::{camera, player};
+use crate::plugins::{camera, player,asset_management};
 
 //TODO: move loading to in game to loading screen
 // currently set in asset_management, update_loading_data
@@ -17,6 +17,7 @@ impl Plugin for GamePlugins {
             .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
             .add_plugins(camera::CameraPlugin)
             .add_plugins(player::PlayerPlugin)
+            .add_plugins(asset_management::AssetManagerPlugin)
             .add_systems(Startup,(spawn_test_level))
         ;
     }

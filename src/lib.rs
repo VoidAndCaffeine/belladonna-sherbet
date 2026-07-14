@@ -1,5 +1,8 @@
 use bevy::app::{App, Plugin};
 
+#[cfg(feature = "dev-tools")]
+use crate::plugins::dev::inspector::InspectorDevPlugin;
+
 mod default;
 mod plugins;
 
@@ -12,9 +15,7 @@ impl Plugin for AppPlugin {
 
         #[cfg(feature = "dev-tools")]
         app
-            .add_plugins(bevy_inspector_egui::bevy_egui::EguiPlugin::default())
-            .add_plugins(bevy_inspector_egui::quick::WorldInspectorPlugin::default())
+            .add_plugins(InspectorDevPlugin)
             .add_plugins(bevy_skein::SkeinPlugin::default());
-        ;
     }
 }
