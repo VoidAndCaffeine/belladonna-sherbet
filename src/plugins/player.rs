@@ -1,7 +1,13 @@
 use avian3d::math::Scalar;
+use avian3d::prelude::{LockedAxes, RigidBody};
+use bevy::post_process::bloom::Bloom;
 use bevy::prelude::*;
+use bevy_tnua::builtins::TnuaBuiltinWalkConfig;
 use bevy_tnua::prelude::*;
 use bevy_tnua_avian3d::{TnuaAvian3dPlugin};
+use crate::plugins::camera::PlayerCamera;
+use crate::plugins::game::GameState;
+use crate::plugins::location_change::LocationChangeDest;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
@@ -9,7 +15,17 @@ pub struct Player;
 
 #[derive(TnuaScheme)]
 #[scheme(basis = TnuaBuiltinWalk)]
-pub enum ControlScheme {
+pub enum ControlScheme{}
+
+#[derive(Component, Reflect)]
+#[reflect(Component)]
+pub struct PlayerSpawn;
+#[derive(States, Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
+pub enum PlayerSpawnState {
+    #[default]
+    NotYetSpawned,
+    Respawn,
+    Spawned,
 }
 
 pub struct PlayerPlugin;
@@ -17,13 +33,56 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app
             .register_type::<Player>()
-            .add_systems(Update, apply_controls.in_set(TnuaUserControlsSystems))
+            .register_type::<PlayerSpawn>()
+            .init_state::<PlayerSpawnState>()
+            .add_systems(Update, apply_controls.in_set(TnuaUserControlsSystems).run_if(in_state(GameState::InGame)))
             .add_plugins(TnuaControllerPlugin::<ControlScheme>::new(FixedUpdate))
             .add_plugins(TnuaAvian3dPlugin::new(FixedUpdate))
+            .add_observer(spawn_player.run_if(in_state(PlayerSpawnState::NotYetSpawned)))
         ;
     }
 }
-
+fn spawn_player(
+    _event: On<Add, PlayerSpawn>,
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut control_scheme_configs: ResMut<Assets<ControlSchemeConfig>>,
+    query: Query<&Transform, With<PlayerSpawn>>
+){
+    let transform = match query.single() {
+        Ok(transform) => transform,
+        Err(_) => return,
+    };
+    let child
+        = asset_server.load(GltfAssetLabel::Scene(0).from_asset("belladonna-sherbet.gltf"));
+    commands.spawn((
+        WorldAssetRoot(child),
+        Transform::from_translation(transform.translation),
+        Player,
+        RigidBody::Dynamic,
+        TnuaController::<ControlScheme>::default(),
+        TnuaConfig::<ControlScheme>(control_scheme_configs.add(ControlSchemeConfig {
+            basis: TnuaBuiltinWalkConfig {
+                float_height:0.01,
+                ..Default::default()
+            }
+        })),
+        //  TnuaAvian3dSensorShape(Collider::cylinder(0.49,0.0)),
+        LockedAxes::ROTATION_LOCKED.unlock_rotation_y(),
+    ));
+    commands.spawn((
+        PlayerCamera,
+        Camera {
+            order: 100,
+            ..default()
+        },
+        AmbientLight{
+            brightness:0.00,
+            ..default()
+        },
+        Bloom::NATURAL,
+    ));
+}
 
 fn apply_controls(
     keyboard: Res<ButtonInput<KeyCode>>,

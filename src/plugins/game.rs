@@ -8,6 +8,7 @@ use crate::plugins::{camera, player,asset_management,location_change};
 pub enum GameState{
     #[default]
     InGame,
+    Loading,
 }
 pub struct GamePlugins;
 impl Plugin for GamePlugins {

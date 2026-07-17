@@ -1,13 +1,9 @@
-use avian3d::prelude::{LockedAxes, RigidBody};
 use bevy::app::{App, Plugin};
-use bevy::post_process::bloom::Bloom;
 use bevy::prelude::*;
-use bevy_tnua::{TnuaConfig, TnuaController};
-use bevy_tnua::builtins::TnuaBuiltinWalkConfig;
 use pipelines_ready::*;
-use crate::plugins::camera::PlayerCamera;
-use crate::plugins::location_change::{Location, LocationChange, LocationChangeDest, LocationChangeInfo};
-use crate::plugins::player::Player;
+use crate::plugins::game::GameState;
+use crate::plugins::location_change::{Location, LocationChange, LocationChangeDest};
+use crate::plugins::player::{Player, PlayerSpawnState};
 
 #[derive(Component,Reflect)]
 #[reflect(Component)]
@@ -19,7 +15,7 @@ impl Plugin for AssetManagerPlugin {
             .register_type::<LightNeedsShadows>()
             .add_observer(add_shadows_to_lights)
             .add_plugins(PipelinesReadyPlugin)
-            .insert_resource(LoadingState::default())
+            .init_state::<LoadingState>()
             .insert_resource(LoadingData::new(5))
             .add_systems(Update, update_loading_data)
             .add_systems(Update,unload_current_level.run_if(resource_changed::<LocationChange>))
@@ -29,12 +25,12 @@ impl Plugin for AssetManagerPlugin {
                     .run_if(resource_changed::<LocationChange>)
                     .after(unload_current_level)
             )
-            .add_observer(spawn_player)
+            .add_observer(respawn_player.run_if(in_state(PlayerSpawnState::Respawn)))
         ;
     }
 }
 
-#[derive(Resource,Default)]
+#[derive(States,Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
 enum LoadingState {
     #[default]
     LevelReady,
@@ -63,10 +59,17 @@ struct LevelComponents;
 
 fn unload_current_level(
     mut commands: Commands,
-    mut loading_state: ResMut<LoadingState>,
+    mut loading_state: ResMut<NextState<LoadingState>>,
+    mut game_state: ResMut<NextState<GameState>>,
+    spawn_state: ResMut<State<PlayerSpawnState>>,
+    mut spawn_next_state: ResMut<NextState<PlayerSpawnState>>,
     entities: Query<Entity, With<LevelComponents>>,
 ) {
-    *loading_state = LoadingState::LevelLoading;
+    if *spawn_state.get() != PlayerSpawnState::NotYetSpawned {
+        spawn_next_state.set(PlayerSpawnState::Respawn);
+    }
+    game_state.set(GameState::Loading);
+    loading_state.set(LoadingState::LevelLoading);
     for entity in entities.iter() {
         commands.entity(entity).despawn();
     }
@@ -97,7 +100,9 @@ fn load_new_level(
 
 fn update_loading_data(
     mut loading_data: ResMut<LoadingData>,
-    mut loading_state: ResMut<LoadingState>,
+    mut loading_state: ResMut<NextState<LoadingState>>,
+    mut game_state: ResMut<NextState<GameState>>,
+    mut spawn_next_state: ResMut<NextState<PlayerSpawnState>>,
     asset_server: Res<AssetServer>,
     pipelines_ready: Res<PipelinesReady>,
 ){
@@ -111,7 +116,9 @@ fn update_loading_data(
     } else {
         loading_data.confirmation_frames_count += 1;
         if loading_data.confirmation_frames_count == loading_data.confirmation_frames_needed {
-            *loading_state = LoadingState::LevelReady;
+            loading_state.set(LoadingState::LevelReady);
+            spawn_next_state.set(PlayerSpawnState::Spawned);
+            game_state.set(GameState::InGame); // ToDo: move this to loading screen once implemented
         }
     }
 }
@@ -121,71 +128,39 @@ fn add_shadows_to_lights(
     mut commands: Commands,
     mut query: Query<&mut PointLight, With<LightNeedsShadows>>,
 ) {
-    info!("Added light");
     let Ok(mut light) = query.get_mut(event.entity) else {
-        info!("Entity was not found");
+        warn!("Found a light not needing shadows");
         return
     };
-    info!("Setting shadows on lights");
     light.shadow_maps_enabled = true;
     commands.entity(event.entity).remove::<LightNeedsShadows>();
 }
 
-fn spawn_player(
+
+fn respawn_player(
     event: On<Add, LocationChangeDest>,
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut control_scheme_configs: ResMut<Assets<crate::plugins::player::ControlSchemeConfig>>,
     lc: Res<LocationChange>,
-    query_t: Query<&Transform, With<LocationChangeDest>>,
-    query_lc: Query<&LocationChangeDest>
+    mut player_transform: Single<&mut Transform, With<Player>>,
+    query_t: Query<&Transform, (With<LocationChangeDest>,Without<Player>)>,
+    query_lc: Query<&LocationChangeDest>,
+    mut spawn_next_state: ResMut<NextState<PlayerSpawnState>>,
 ) {
+    info!("Attempting Respawn Player");
     let lc_info = match query_lc.get(event.entity) {
         Ok(info) => info,
         Err(_) => return,
     };
     if lc.origin != lc_info.origin || lc.destination != lc_info.destination {
-        info!("Could Not find a matching spawn point");
-        info!("Found {:?}, {:?}; expected: {:?}, {:?}", lc.origin, lc.destination, lc_info.origin, lc_info.destination);
         return;
     }
     let transform = match query_t.get(event.entity) {
         Ok(transform) => transform,
         Err(_) => return,
     };
-    info!("Spawning player from {:?} in {:?} at position {}",lc_info.origin,lc_info.destination, transform.translation);
-    let child
-        = asset_server.load(GltfAssetLabel::Scene(0).from_asset("belladonna-sherbet.gltf"));
-    commands.spawn((
-        WorldAssetRoot(child),
-        LevelComponents,
-        Transform::from_translation(transform.translation),
-        Player,
-        RigidBody::Dynamic,
-        TnuaController::<crate::plugins::player::ControlScheme>::default(),
-        TnuaConfig::<crate::plugins::player::ControlScheme>(control_scheme_configs.add( crate::plugins::player::ControlSchemeConfig {
-            basis: TnuaBuiltinWalkConfig {
-                float_height:0.01,
-                ..Default::default()
-            }
-        })),
-        //  TnuaAvian3dSensorShape(Collider::cylinder(0.49,0.0)),
-        LockedAxes::ROTATION_LOCKED.unlock_rotation_y(),
-    ));
-    commands.spawn((
-        PlayerCamera,
-        LevelComponents,
-        Camera {
-            order: 100,
-            ..default()
-        },
-        AmbientLight{
-            brightness:0.00,
-            ..default()
-        },
-        Bloom::NATURAL,
-    ));
+    info!("Respawning player from {:?} in {:?} at position {}",lc_info.origin,lc_info.destination, transform.translation);
+    player_transform.translation = transform.translation;
 }
+
 mod pipelines_ready {
     use bevy::{
         prelude::*,
