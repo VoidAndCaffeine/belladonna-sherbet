@@ -6,7 +6,7 @@ use bevy_tnua::{TnuaConfig, TnuaController};
 use bevy_tnua::builtins::TnuaBuiltinWalkConfig;
 use pipelines_ready::*;
 use crate::plugins::camera::PlayerCamera;
-use crate::plugins::location_change::{Location, LocationChange, LocationChangeInfo};
+use crate::plugins::location_change::{Location, LocationChange, LocationChangeDest, LocationChangeInfo};
 use crate::plugins::player::Player;
 
 #[derive(Component,Reflect)]
@@ -132,19 +132,19 @@ fn add_shadows_to_lights(
 }
 
 fn spawn_player(
-    event: On<Add, LocationChangeInfo>,
+    event: On<Add, LocationChangeDest>,
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut control_scheme_configs: ResMut<Assets<crate::plugins::player::ControlSchemeConfig>>,
     lc: Res<LocationChange>,
-    query_t: Query<&Transform, With<LocationChangeInfo>>,
-    query_lc: Query<&LocationChangeInfo>
+    query_t: Query<&Transform, With<LocationChangeDest>>,
+    query_lc: Query<&LocationChangeDest>
 ) {
     let lc_info = match query_lc.get(event.entity) {
         Ok(info) => info,
         Err(_) => return,
     };
-    if lc.origin != lc_info.destination || lc.destination != lc_info.origin {
+    if lc.origin != lc_info.origin || lc.destination != lc_info.destination {
         info!("Could Not find a matching spawn point");
         info!("Found {:?}, {:?}; expected: {:?}, {:?}", lc.origin, lc.destination, lc_info.origin, lc_info.destination);
         return;
