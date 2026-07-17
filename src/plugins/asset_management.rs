@@ -1,6 +1,5 @@
 use avian3d::prelude::{LockedAxes, RigidBody};
 use bevy::app::{App, Plugin};
-use bevy::ecs::system::SystemId;
 use bevy::post_process::bloom::Bloom;
 use bevy::prelude::*;
 use bevy_tnua::{TnuaConfig, TnuaController};
@@ -81,9 +80,11 @@ fn load_new_level(
 ) {
     let level = match location_change_info.destination {
         Location::Test => {
-            asset_server.load(GltfAssetLabel::Scene(2).from_asset("belladonna-sherbet.gltf"))
+            info!("Loading Test Level");
+            asset_server.load(GltfAssetLabel::Scene(1).from_asset("belladonna-sherbet.gltf"))
         }
         Location::Greenhouse => {
+            info!("Loading Greenhouse Level");
             asset_server.load(GltfAssetLabel::Scene(2).from_asset("belladonna-sherbet.gltf"))
         }
     };
@@ -135,16 +136,29 @@ fn spawn_player(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut control_scheme_configs: ResMut<Assets<crate::plugins::player::ControlSchemeConfig>>,
-    lc_info: Res<LocationChange>
+    lc: Res<LocationChange>,
+    query_t: Query<&Transform, With<LocationChangeInfo>>,
+    query_lc: Query<&LocationChangeInfo>
 ) {
-    //compare LCI with LC
-
-    let transform = query.single().unwrap().1;
-    info!("Spawning player at position {}", transform.translation);
+    let lc_info = match query_lc.get(event.entity) {
+        Ok(info) => info,
+        Err(_) => return,
+    };
+    if lc.origin != lc_info.destination || lc.destination != lc_info.origin {
+        info!("Could Not find a matching spawn point");
+        info!("Found {:?}, {:?}; expected: {:?}, {:?}", lc.origin, lc.destination, lc_info.origin, lc_info.destination);
+        return;
+    }
+    let transform = match query_t.get(event.entity) {
+        Ok(transform) => transform,
+        Err(_) => return,
+    };
+    info!("Spawning player from {:?} in {:?} at position {}",lc_info.origin,lc_info.destination, transform.translation);
     let child
         = asset_server.load(GltfAssetLabel::Scene(0).from_asset("belladonna-sherbet.gltf"));
     commands.spawn((
         WorldAssetRoot(child),
+        LevelComponents,
         Transform::from_translation(transform.translation),
         Player,
         RigidBody::Dynamic,
@@ -160,6 +174,7 @@ fn spawn_player(
     ));
     commands.spawn((
         PlayerCamera,
+        LevelComponents,
         Camera {
             order: 100,
             ..default()

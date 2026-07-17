@@ -1,11 +1,7 @@
 use avian3d::math::Scalar;
-use avian3d::prelude::{Collider, LockedAxes, RigidBody};
-use bevy::post_process::bloom::Bloom;
 use bevy::prelude::*;
-use bevy_tnua::builtins::{TnuaBuiltinJumpConfig, TnuaBuiltinWalkConfig};
 use bevy_tnua::prelude::*;
-use bevy_tnua_avian3d::{TnuaAvian3dPlugin, TnuaAvian3dSensorShape};
-use crate::plugins::camera::PlayerCamera;
+use bevy_tnua_avian3d::{TnuaAvian3dPlugin};
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
@@ -13,7 +9,7 @@ pub struct Player;
 
 #[derive(TnuaScheme)]
 #[scheme(basis = TnuaBuiltinWalk)]
-enum ControlScheme {
+pub enum ControlScheme {
 }
 
 pub struct PlayerPlugin;

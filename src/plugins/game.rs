@@ -19,18 +19,6 @@ impl Plugin for GamePlugins {
             .add_plugins(player::PlayerPlugin)
             .add_plugins(asset_management::AssetManagerPlugin)
             .add_plugins(location_change::LocationChangePlugin)
-            .add_systems(Startup,(spawn_test_level))
         ;
     }
-}
-
-
-fn spawn_test_level(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-) {
-    commands.spawn(WorldAssetRoot(
-            asset_server.load(GltfAssetLabel::Scene(2).from_asset("belladonna-sherbet.gltf")),
-        ));
-    info!("Created Game");
 }
