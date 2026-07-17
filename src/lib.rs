@@ -11,11 +11,13 @@ impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugins(default::Default)
-            .add_plugins(plugins::game::GamePlugins);
+            .add_plugins(plugins::game::GamePlugins)
+            .add_plugins(bevy_skein::SkeinPlugin::default())
+        ;
 
         #[cfg(feature = "dev-tools")]
         app
             .add_plugins(InspectorDevPlugin)
-            .add_plugins(bevy_skein::SkeinPlugin::default());
+        ;
     }
 }

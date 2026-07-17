@@ -8,7 +8,7 @@ log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] 
 bevy = { version = "0.19", features = ["dynamic_linking"] }
 bevy-inspector-egui = { version = "0.37", optional = true }
 egui_dock = { version = "0.19" , optional = true}
-bevy_skein = {version = "0.6", optional = true}
+bevy_skein = "0.6"
 avian3d = "0.7.0"
 bevy-tnua-avian3d = "0.12.0"
 bevy-tnua = "0.32.0"
@@ -17,7 +17,6 @@ bevy-tnua = "0.32.0"
 default = []
 dev-tools = [
     "dep:bevy-inspector-egui",
-    "dep:bevy_skein",
     "dep:egui_dock"
 ]
 

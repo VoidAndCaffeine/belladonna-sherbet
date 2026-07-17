@@ -5,3 +5,4 @@ mod asset_management;
 
 #[cfg(feature = "dev-tools")]
 pub mod dev;
+mod location_change;
