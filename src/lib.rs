@@ -1,5 +1,4 @@
 use bevy::app::{App, Plugin};
-
 #[cfg(feature = "dev-tools")]
 use crate::plugins::dev::inspector::InspectorDevPlugin;
 
@@ -13,6 +12,7 @@ impl Plugin for AppPlugin {
             .add_plugins(default::Default)
             .add_plugins(plugins::game::GamePlugins)
             .add_plugins(bevy_skein::SkeinPlugin::default())
+
         ;
 
         #[cfg(feature = "dev-tools")]
