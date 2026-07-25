@@ -1,5 +1,6 @@
 use avian3d::prelude::CollisionStart;
 use bevy::prelude::*;
+use crate::plugins::player::Player;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
@@ -8,6 +9,7 @@ pub enum Location {
     #[default]
     Test,
     Greenhouse,
+    CaspianGround,
 }
 
 #[derive(Component, Reflect)]
@@ -48,6 +50,7 @@ impl Plugin for LocationChangePlugin {
 pub fn change_location(
     event: On<CollisionStart>,
     query: Query<&LocationChangeInfo>,
+    player_query: Query<&Player>,
     mut lc_change: ResMut<LocationChange>,
 ){
     let lc_info = match query.get(event.event_target()) {

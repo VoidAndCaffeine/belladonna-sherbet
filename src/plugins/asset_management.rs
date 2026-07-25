@@ -90,6 +90,10 @@ fn load_new_level(
             info!("Loading Greenhouse Level");
             asset_server.load(GltfAssetLabel::Scene(2).from_asset("belladonna-sherbet.gltf"))
         }
+        Location::CaspianGround => {
+            info!("Loading Caspian Ground Floor");
+            asset_server.load(GltfAssetLabel::Scene(3).from_asset("belladonna-sherbet.gltf"))
+        }
     };
     loading_data.loading_assets.push(level.clone().into());
     commands.spawn((
@@ -143,7 +147,6 @@ fn respawn_player(
     mut player_transform: Single<&mut Transform, With<Player>>,
     query_t: Query<&Transform, (With<LocationChangeDest>,Without<Player>)>,
     query_lc: Query<&LocationChangeDest>,
-    mut spawn_next_state: ResMut<NextState<PlayerSpawnState>>,
 ) {
     info!("Attempting Respawn Player");
     let lc_info = match query_lc.get(event.entity) {

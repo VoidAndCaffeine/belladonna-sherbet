@@ -1,10 +1,10 @@
 use avian3d::math::Scalar;
-use avian3d::prelude::{LockedAxes, RigidBody};
+use avian3d::prelude::{Collider, LockedAxes, RigidBody};
 use bevy::post_process::bloom::Bloom;
 use bevy::prelude::*;
 use bevy_tnua::builtins::TnuaBuiltinWalkConfig;
 use bevy_tnua::prelude::*;
-use bevy_tnua_avian3d::{TnuaAvian3dPlugin};
+use bevy_tnua_avian3d::{TnuaAvian3dPlugin, TnuaAvian3dSensorShape};
 use crate::plugins::camera::PlayerCamera;
 use crate::plugins::game::GameState;
 use crate::plugins::location_change::LocationChangeDest;
@@ -63,11 +63,11 @@ fn spawn_player(
         TnuaController::<ControlScheme>::default(),
         TnuaConfig::<ControlScheme>(control_scheme_configs.add(ControlSchemeConfig {
             basis: TnuaBuiltinWalkConfig {
-                float_height:0.01,
+                float_height:0.1,
                 ..Default::default()
             }
         })),
-        //  TnuaAvian3dSensorShape(Collider::cylinder(0.49,0.0)),
+        TnuaAvian3dSensorShape(Collider::cylinder(0.49,0.0)),
         LockedAxes::ROTATION_LOCKED.unlock_rotation_y(),
     ));
     commands.spawn((
