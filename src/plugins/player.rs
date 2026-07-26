@@ -7,7 +7,6 @@ use bevy_tnua::prelude::*;
 use bevy_tnua_avian3d::{TnuaAvian3dPlugin, TnuaAvian3dSensorShape};
 use crate::plugins::camera::PlayerCamera;
 use crate::plugins::game::GameState;
-use crate::plugins::location_change::LocationChangeDest;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
@@ -57,18 +56,19 @@ fn spawn_player(
         = asset_server.load(GltfAssetLabel::Scene(0).from_asset("belladonna-sherbet.gltf"));
     commands.spawn((
         WorldAssetRoot(child),
-        Transform::from_translation(transform.translation),
+        Transform::from_translation(transform.translation + Vec3::new(0.0, 0.8, 0.0)),
         Player,
         RigidBody::Dynamic,
         TnuaController::<ControlScheme>::default(),
         TnuaConfig::<ControlScheme>(control_scheme_configs.add(ControlSchemeConfig {
             basis: TnuaBuiltinWalkConfig {
-                float_height:0.1,
+                float_height:0.8,
                 ..Default::default()
             }
         })),
-        TnuaAvian3dSensorShape(Collider::cylinder(0.49,0.0)),
+        TnuaAvian3dSensorShape(Collider::cylinder((0.4 * 0.75),0.0)),
         LockedAxes::ROTATION_LOCKED.unlock_rotation_y(),
+        Collider::capsule((0.5 * 0.75),0.8),
     ));
     commands.spawn((
         PlayerCamera,
@@ -100,14 +100,13 @@ fn apply_controls(
 
     let h = right as i8 - left as i8;
     let v = up as i8 - down as i8;
-    let direction = Vec3::new(h as Scalar, 0.0, v as Scalar).clamp_length_max(1.0);
+    let direction = Vec3::new(h as Scalar, 0.0, v as Scalar).clamp_length_max(1.0).normalize_or_zero();
     // Set the basis every frame. Even if the player doesn't move - just use `desired_velocity:
     // Vec3::ZERO` to reset the previous frame's input.
     controller.basis = TnuaBuiltinWalk {
         // The `desired_motion` determines how the character will move.
-        desired_motion: direction.normalize_or_zero(),
-        // The other field is `desired_forward` - but since the character model is a capsule we
-        // don't care the direction its "forward" is pointing.
+        desired_motion: direction,
+        desired_forward: Dir3::new(direction).ok(),
         ..Default::default()
     };
 }

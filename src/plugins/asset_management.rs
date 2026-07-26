@@ -161,7 +161,7 @@ fn respawn_player(
         Err(_) => return,
     };
     info!("Respawning player from {:?} in {:?} at position {}",lc_info.origin,lc_info.destination, transform.translation);
-    player_transform.translation = transform.translation;
+    player_transform.translation = transform.translation + Vec3::new(0.0, 0.8, 0.0);
 }
 
 mod pipelines_ready {

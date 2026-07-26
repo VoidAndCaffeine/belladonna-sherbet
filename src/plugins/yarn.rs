@@ -10,7 +10,7 @@ impl Plugin for YarnPlugin {
                 YarnSpinnerPlugin::new(),
                 ExampleYarnSpinnerDialogueViewPlugin::new()
             ))
-            .add_systems(Update, spawn_dialogue_runner.run_if(resource_added::<YarnProject>))
+            //.add_systems(Update, spawn_dialogue_runner.run_if(resource_added::<YarnProject>))
         ;
     }
 }

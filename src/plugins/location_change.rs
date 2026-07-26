@@ -57,6 +57,10 @@ pub fn change_location(
         Ok(loc_info) => loc_info,
         Err(_) => return,
     };
+    let _ = match player_query.get(event.collider2) {
+        Ok(_) => {info!("Player entered doorway")}
+        Err(_) => return,
+    };
     info!("Change location requested from {:?} to {:?}",lc_info.origin,lc_info.destination);
     lc_change.destination = lc_info.destination;
     lc_change.origin = lc_info.origin;
