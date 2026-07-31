@@ -9,6 +9,7 @@ impl Plugin for YarnPlugin {
     fn build(&self, app: &mut App) {
         app
             .register_type::<YarnNode>()
+            .init_state::<DialogueState>()
             .add_plugins((
                 YarnSpinnerPlugin::new(),
                 ExampleYarnSpinnerDialogueViewPlugin::new()

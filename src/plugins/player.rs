@@ -7,6 +7,7 @@ use bevy_tnua::prelude::*;
 use bevy_tnua_avian3d::{TnuaAvian3dPlugin, TnuaAvian3dSensorShape};
 use crate::plugins::camera::PlayerCamera;
 use crate::plugins::game::GameState;
+use crate::plugins::yarn::DialogueState;
 
 #[derive(Component, Reflect)]
 #[reflect(Component)]
@@ -34,7 +35,11 @@ impl Plugin for PlayerPlugin {
             .register_type::<Player>()
             .register_type::<PlayerSpawn>()
             .init_state::<PlayerSpawnState>()
-            .add_systems(Update, apply_controls.in_set(TnuaUserControlsSystems).run_if(in_state(GameState::InGame)))
+            .add_systems(Update, apply_controls
+                .in_set(TnuaUserControlsSystems)
+                .run_if(in_state(GameState::InGame))
+                .run_if(in_state(DialogueState::Game))
+            )
             .add_plugins(TnuaControllerPlugin::<ControlScheme>::new(FixedUpdate))
             .add_plugins(TnuaAvian3dPlugin::new(FixedUpdate))
             .add_observer(spawn_player.run_if(in_state(PlayerSpawnState::NotYetSpawned)))
