@@ -14,6 +14,8 @@ bevy-tnua-avian3d = "0.12.0"
 bevy-tnua = "0.32.0"
 bevy_yarnspinner = { git = "https://github.com/Person-93/YarnSpinner-Rust.git", branch = "bevy-0.19"}
 bevy_yarnspinner_example_dialogue_view = { git = "https://github.com/Person-93/YarnSpinner-Rust.git", branch = "bevy-0.19"}
+bevy-persistent = { version = "0.11.0", features = ["all"] }
+serde = { version = "1.0.228", features = ["derive"] }
 
 [features]
 default = []

@@ -1,4 +1,6 @@
+use std::path::PathBuf;
 use bevy::app::*;
+use bevy::platform::dirs;
 use bevy::prelude::*;
 use crate::plugins::{camera, player,asset_management,location_change,yarn};
 
@@ -10,12 +12,21 @@ pub enum GameState{
     InGame,
     Loading,
 }
+
+#[derive(Resource)]
+pub struct DataPath {
+    pub path: PathBuf,
+}
+
 pub struct GamePlugins;
 impl Plugin for GamePlugins {
     fn build(&self, app: &mut App){
         app
             .init_state::<GameState>()
             .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
+            .insert_resource(DataPath{ path: dirs::preferences_dir().unwrap()
+                    .join("Coffee Constellations").join("Belladonna Sherbet")
+            })
             .add_plugins(camera::CameraPlugin)
             .add_plugins(player::PlayerPlugin)
             .add_plugins(asset_management::AssetManagerPlugin)
