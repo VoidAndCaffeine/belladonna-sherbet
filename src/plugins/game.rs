@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use bevy::app::*;
 use bevy::platform::dirs;
 use bevy::prelude::*;
-use crate::plugins::{camera, player,asset_management,location_change,yarn};
+use crate::plugins::{camera, player, asset_management, location_change, yarn, save};
 
 //TODO: move loading to in game to loading screen
 // currently set in asset_management, update_loading_data
@@ -32,6 +32,7 @@ impl Plugin for GamePlugins {
             .add_plugins(asset_management::AssetManagerPlugin)
             .add_plugins(location_change::LocationChangePlugin)
             .add_plugins(yarn::YarnPlugin)
+            .add_plugins(save::SavePlugin)
         ;
     }
 }
