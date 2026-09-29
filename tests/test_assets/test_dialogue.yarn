@@ -1,0 +1,6 @@
+title: TestDialogue
+---
+TestNode:
+    <<Test dialogue line>>
+    ===
+    -> END
