@@ -2199,8 +2199,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_yarnspinner"
-version = "0.8.0"
-source = "git+https://github.com/Person-93/YarnSpinner-Rust.git?branch=bevy-0.19#52bbf54aa65b25a195f55ee3a3c34e08c8f9b954"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d4b265c47a2352a401c56ed475df272d229913f994edc1ad806bf8f6d4afa75"
 dependencies = [
  "anyhow",
  "bevy",
@@ -2215,8 +2216,9 @@ dependencies = [
 
 [[package]]
 name = "bevy_yarnspinner_example_dialogue_view"
-version = "0.8.0"
-source = "git+https://github.com/Person-93/YarnSpinner-Rust.git?branch=bevy-0.19#52bbf54aa65b25a195f55ee3a3c34e08c8f9b954"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4cb9679ac830c8442232f319833515cb3a70a44c0269d0104fbe06b782024794"
 dependencies = [
  "bevy",
  "bevy_yarnspinner",
@@ -7992,8 +7994,9 @@ checksum = "3ae8337f8a065cfc972643663ea4279e04e7256de865aa66fe25cec5fb912d3f"
 
 [[package]]
 name = "yarnspinner"
-version = "0.8.0"
-source = "git+https://github.com/Person-93/YarnSpinner-Rust.git?branch=bevy-0.19#52bbf54aa65b25a195f55ee3a3c34e08c8f9b954"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "71d7fe0ba35699b3cda9d210d946b732080da94c4613067e370de46b3b0d6964"
 dependencies = [
  "bevy",
  "log",
@@ -8004,8 +8007,9 @@ dependencies = [
 
 [[package]]
 name = "yarnspinner_compiler"
-version = "0.8.0"
-source = "git+https://github.com/Person-93/YarnSpinner-Rust.git?branch=bevy-0.19#52bbf54aa65b25a195f55ee3a3c34e08c8f9b954"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20d47f17f784641ff719f9ab083f5a19b4c4993dee91825639e5470e819f3793"
 dependencies = [
  "annotate-snippets",
  "antlr-rust",
@@ -8025,8 +8029,9 @@ dependencies = [
 
 [[package]]
 name = "yarnspinner_core"
-version = "0.8.0"
-source = "git+https://github.com/Person-93/YarnSpinner-Rust.git?branch=bevy-0.19#52bbf54aa65b25a195f55ee3a3c34e08c8f9b954"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2755aaee8323da9f9019be8895c56e8a01e54e54dc08becef969835ea8624833"
 dependencies = [
  "bevy",
  "getrandom 0.4.3",
@@ -8041,12 +8046,14 @@ dependencies = [
 [[package]]
 name = "yarnspinner_internal_shared"
 version = "0.1.0"
-source = "git+https://github.com/Person-93/YarnSpinner-Rust.git?branch=bevy-0.19#52bbf54aa65b25a195f55ee3a3c34e08c8f9b954"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9f557dcec770356c5827f42463dd0020d537ef144ec1764086a2375d23c7d86a"
 
 [[package]]
 name = "yarnspinner_runtime"
-version = "0.8.0"
-source = "git+https://github.com/Person-93/YarnSpinner-Rust.git?branch=bevy-0.19#52bbf54aa65b25a195f55ee3a3c34e08c8f9b954"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d951c28bbcb97f01e9bb4eb54a5cf7a856bcee843b50369860c2553c1e2c1e6f"
 dependencies = [
  "bevy",
  "bevy_platform",
