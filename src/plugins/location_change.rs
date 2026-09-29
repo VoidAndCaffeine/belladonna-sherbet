@@ -25,7 +25,7 @@ pub struct LocationChangeDest{
     pub destination: Location,
 }
 
-#[derive(Resource,Reflect)]
+#[derive(Resource,Reflect, Default)]
 #[reflect(Resource)]
 pub struct LocationChange{
     pub origin: Location,

@@ -20,11 +20,11 @@ pub struct Player;
 pub enum ControlScheme{}
 
 #[derive(Resource,Serialize,Deserialize)]
-struct KeyboardKeyBindings {
-    up: [KeyCode; 2],
-    down: [KeyCode; 2],
-    left: [KeyCode; 2],
-    right: [KeyCode; 2],
+pub struct KeyboardKeyBindings {
+    pub up: [KeyCode; 2],
+    pub down: [KeyCode; 2],
+    pub left: [KeyCode; 2],
+    pub right: [KeyCode; 2],
 }
 
 #[derive(Component, Reflect)]
@@ -126,7 +126,7 @@ fn spawn_player(
     ));
 }
 
-fn apply_controls(
+pub fn apply_controls(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut query: Query<&mut TnuaController<ControlScheme>>,
     kb_bindings: Res<Persistent<KeyboardKeyBindings>>,

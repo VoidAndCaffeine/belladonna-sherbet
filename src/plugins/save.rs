@@ -19,8 +19,8 @@ impl Plugin for SavePlugin {
 #[derive(Resource, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SaveData{
-    version: Option<String>,
-    test: Option<i32>,
+    pub version: Option<String>,
+    pub test: Option<i32>,
 }
 
 impl Default for SaveData {

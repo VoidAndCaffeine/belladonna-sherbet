@@ -31,7 +31,7 @@ impl Plugin for AssetManagerPlugin {
 }
 
 #[derive(States,Clone, Copy, Debug, Default, Eq, PartialEq, Hash)]
-enum LoadingState {
+pub enum LoadingState {
     #[default]
     LevelReady,
     LevelLoading,

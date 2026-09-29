@@ -1,10 +1,10 @@
 pub mod game;
-mod camera;
-mod player;
-mod asset_management;
+pub mod camera;
+pub mod player;
+pub mod asset_management;
 
 #[cfg(feature = "dev-tools")]
 pub mod dev;
-mod location_change;
-mod yarn;
-mod save;
+pub mod location_change;
+pub mod yarn;
+pub mod save;

@@ -3,7 +3,7 @@ use bevy::app::{App, Plugin};
 use crate::plugins::dev::inspector::InspectorDevPlugin;
 
 mod default;
-mod plugins;
+pub mod plugins;
 
 pub struct AppPlugin;
 impl Plugin for AppPlugin {
@@ -12,7 +12,6 @@ impl Plugin for AppPlugin {
             .add_plugins(default::Default)
             .add_plugins(plugins::game::GamePlugins)
             .add_plugins(bevy_skein::SkeinPlugin::default())
-
         ;
 
         #[cfg(feature = "dev-tools")]
