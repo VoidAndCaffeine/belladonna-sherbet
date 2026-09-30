@@ -1,7 +1,9 @@
+use serial_test::serial;
 use belladonna_sherbet::plugins::save::SaveData;
 use std::env;
 
 #[test]
+#[serial]
 fn test_save_data_default() {
     let save_data = SaveData::default();
     assert_eq!(save_data.version, None);
@@ -9,6 +11,7 @@ fn test_save_data_default() {
 }
 
 #[test]
+#[serial]
 fn test_save_data_serialization() {
     let mut save_data = SaveData::default();
     save_data.version = Some("0.1.0".to_string());
@@ -22,6 +25,7 @@ fn test_save_data_serialization() {
 }
 
 #[test]
+#[serial]
 fn test_save_data_version_field() {
     let mut save_data = SaveData::default();
     save_data.version = Some(env!("CARGO_PKG_VERSION").to_string());
@@ -30,6 +34,7 @@ fn test_save_data_version_field() {
 }
 
 #[test]
+#[serial]
 fn test_save_data_test_counter_increment() {
     let mut save_data = SaveData::default();
 
@@ -44,6 +49,7 @@ fn test_save_data_test_counter_increment() {
 }
 
 #[test]
+#[serial]
 fn test_save_data_none_to_some() {
     let mut save_data = SaveData::default();
     assert_eq!(save_data.test, None);
@@ -53,6 +59,7 @@ fn test_save_data_none_to_some() {
 }
 
 #[test]
+#[serial]
 fn test_save_data_toml_roundtrip() {
     let mut original = SaveData::default();
     original.version = Some("1.0.0".to_string());
@@ -66,6 +73,7 @@ fn test_save_data_toml_roundtrip() {
 }
 
 #[test]
+#[serial]
 fn test_save_data_skip_serializing_none() {
     let save_data = SaveData::default();
 
@@ -75,6 +83,7 @@ fn test_save_data_skip_serializing_none() {
 }
 
 #[test]
+#[serial]
 fn test_save_data_with_some_fields() {
     let mut save_data = SaveData::default();
     save_data.version = Some("0.1.0".to_string());

@@ -1,3 +1,4 @@
+use serial_test::serial;
 use belladonna_sherbet::plugins::location_change::{Location, LocationChange, LocationChangeInfo, LocationChangeDest, change_location};
 use belladonna_sherbet::plugins::player::Player;
 use bevy::prelude::*;
@@ -11,12 +12,14 @@ fn setup_test_app() -> App {
 }
 
 #[test]
+#[serial]
 fn test_location_enum_default() {
     let location = Location::default();
     assert_eq!(location, Location::Test);
 }
 
 #[test]
+#[serial]
 fn test_location_enum_variants() {
     assert_eq!(Location::Test as u8, 0);
     assert_eq!(Location::Greenhouse as u8, 1);
@@ -24,14 +27,16 @@ fn test_location_enum_variants() {
 }
 
 #[test]
+#[serial]
 fn test_location_change_resource_default() {
-    let mut app = setup_test_app();
+    let app = setup_test_app();
     let location_change = app.world().resource::<LocationChange>();
     assert_eq!(location_change.origin, Location::Test);
     assert_eq!(location_change.destination, Location::Test);
 }
 
 #[test]
+#[serial]
 fn test_location_change_info_component() {
     let info = LocationChangeInfo {
         origin: Location::Test,
@@ -42,6 +47,7 @@ fn test_location_change_info_component() {
 }
 
 #[test]
+#[serial]
 fn test_location_change_dest_component() {
     let dest = LocationChangeDest {
         origin: Location::Test,
@@ -61,6 +67,7 @@ fn make_collision(collider1: Entity, collider2: Entity) -> CollisionStart {
 }
 
 #[test]
+#[serial]
 fn test_change_location_updates_resource() {
     let mut app = setup_test_app();
 
@@ -81,6 +88,7 @@ fn test_change_location_updates_resource() {
 }
 
 #[test]
+#[serial]
 fn test_change_location_ignores_non_player() {
     let mut app = setup_test_app();
 
@@ -101,6 +109,7 @@ fn test_change_location_ignores_non_player() {
 }
 
 #[test]
+#[serial]
 fn test_change_location_ignores_missing_info() {
     let mut app = setup_test_app();
 
@@ -117,6 +126,7 @@ fn test_change_location_ignores_missing_info() {
 }
 
 #[test]
+#[serial]
 fn test_location_change_multiple_transitions() {
     let mut app = setup_test_app();
 

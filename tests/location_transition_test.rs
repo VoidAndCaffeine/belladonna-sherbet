@@ -1,6 +1,7 @@
+use serial_test::serial;
 mod common;
 use common::TestApp;
-use belladonna_sherbet::plugins::location_change::{Location, LocationChange, LocationChangeInfo, LocationChangeDest};
+use belladonna_sherbet::plugins::location_change::{Location, LocationChange, LocationChangeInfo};
 use belladonna_sherbet::plugins::player::Player;
 use bevy::prelude::*;
 use avian3d::prelude::CollisionStart;
@@ -15,9 +16,9 @@ fn make_collision(collider1: Entity, collider2: Entity) -> CollisionStart {
 }
 
 #[test]
+#[serial]
 fn test_location_transition_on_player_collision() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -39,9 +40,9 @@ fn test_location_transition_on_player_collision() {
 }
 
 #[test]
+#[serial]
 fn test_location_transition_ignores_non_player() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -62,9 +63,9 @@ fn test_location_transition_ignores_non_player() {
 }
 
 #[test]
+#[serial]
 fn test_location_transition_updates_origin() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -101,9 +102,9 @@ fn test_location_transition_updates_origin() {
 }
 
 #[test]
+#[serial]
 fn test_location_transition_with_missing_info_ignored() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);

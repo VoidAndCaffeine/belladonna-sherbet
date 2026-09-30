@@ -1,3 +1,4 @@
+use serial_test::serial;
 mod common;
 use common::TestApp;
 use belladonna_sherbet::plugins::yarn::{DialogueState, YarnNode};
@@ -15,9 +16,9 @@ fn make_collision(collider1: Entity, collider2: Entity) -> CollisionStart {
 }
 
 #[test]
+#[serial]
 fn test_dialogue_state_transition_on_yarn_collision() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     
     test_app.spawn_player();
@@ -40,9 +41,9 @@ fn test_dialogue_state_transition_on_yarn_collision() {
 }
 
 #[test]
+#[serial]
 fn test_dialogue_ignores_non_player_collision() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     
     test_app.spawn_player();
@@ -59,9 +60,9 @@ fn test_dialogue_ignores_non_player_collision() {
 }
 
 #[test]
+#[serial]
 fn test_dialogue_ignores_missing_yarn_node() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     
     test_app.spawn_player();

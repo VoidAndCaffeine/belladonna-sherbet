@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
-bevy = { version = "0.19", features = ["dynamic_linking"] }
+bevy = { version = "0.19", features = ["dynamic_linking"], default-features = true }
 bevy-inspector-egui = { version = "0.37", optional = true }
 egui_dock = { version = "0.19" , optional = true}
 bevy_skein = "0.6"
@@ -23,6 +23,8 @@ tempfile = "3.8"
 toml = "0.8"
 bevy_state = "0.19"
 serial_test = "3.0"
+bevy_world_serialization = "0.19"
+bevy_image = "0.19"
 
 [features]
 default = []

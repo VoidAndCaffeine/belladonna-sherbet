@@ -108,9 +108,9 @@ fn spawn_player(
                 ..Default::default()
             }
         })),
-        TnuaAvian3dSensorShape(Collider::cylinder((0.4 * 0.75),0.0)),
+        TnuaAvian3dSensorShape(Collider::cylinder(0.4 * 0.75, 0.0)),
         LockedAxes::ROTATION_LOCKED.unlock_rotation_y(),
-        Collider::capsule((0.5 * 0.75),0.8),
+        Collider::capsule(0.5 * 0.75, 0.8),
     ));
     commands.spawn((
         PlayerCamera,

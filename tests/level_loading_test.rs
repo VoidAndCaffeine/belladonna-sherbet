@@ -1,3 +1,4 @@
+use serial_test::serial;
 mod common;
 use common::TestApp;
 use belladonna_sherbet::plugins::game::GameState;
@@ -17,9 +18,9 @@ fn make_collision(collider1: Entity, collider2: Entity) -> CollisionStart {
 }
 
 #[test]
+#[serial]
 fn test_loading_state_transitions_on_location_change() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -48,9 +49,9 @@ fn test_loading_state_transitions_on_location_change() {
 }
 
 #[test]
+#[serial]
 fn test_old_level_entities_despawned_on_location_change() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -84,9 +85,9 @@ fn test_old_level_entities_despawned_on_location_change() {
 }
 
 #[test]
+#[serial]
 fn test_location_change_resource_updated() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -109,9 +110,9 @@ fn test_location_change_resource_updated() {
 }
 
 #[test]
+#[serial]
 fn test_player_respawn_state_on_location_change() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);

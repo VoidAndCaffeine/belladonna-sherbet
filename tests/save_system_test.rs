@@ -1,3 +1,4 @@
+use serial_test::serial;
 mod common;
 use common::TestApp;
 use belladonna_sherbet::plugins::save::SaveData;
@@ -5,9 +6,9 @@ use bevy::prelude::*;
 use std::fs;
 
 #[test]
+#[serial]
 fn test_quicksave_creates_save_file() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -27,9 +28,9 @@ fn test_quicksave_creates_save_file() {
 }
 
 #[test]
+#[serial]
 fn test_quicksave_updates_version() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -42,9 +43,9 @@ fn test_quicksave_updates_version() {
 }
 
 #[test]
+#[serial]
 fn test_quicksave_increments_counter() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -66,9 +67,9 @@ fn test_quicksave_increments_counter() {
 }
 
 #[test]
+#[serial]
 fn test_quicksave_persists_to_disk() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -85,9 +86,9 @@ fn test_quicksave_persists_to_disk() {
 }
 
 #[test]
+#[serial]
 fn test_quicksave_works_in_any_state() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(5);

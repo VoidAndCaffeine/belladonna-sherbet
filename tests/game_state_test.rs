@@ -1,3 +1,4 @@
+use serial_test::serial;
 use belladonna_sherbet::plugins::game::GameState;
 use belladonna_sherbet::plugins::player::PlayerSpawnState;
 use belladonna_sherbet::plugins::yarn::DialogueState;
@@ -7,24 +8,28 @@ use bevy::prelude::*;
 use bevy_state::app::StatesPlugin;
 
 #[test]
+#[serial]
 fn test_game_state_default() {
     let state = GameState::default();
     assert_eq!(state, GameState::InGame);
 }
 
 #[test]
+#[serial]
 fn test_game_state_variants() {
     assert_eq!(GameState::InGame as u8, 0);
     assert_eq!(GameState::Loading as u8, 1);
 }
 
 #[test]
+#[serial]
 fn test_player_spawn_state_default() {
     let state = PlayerSpawnState::default();
     assert_eq!(state, PlayerSpawnState::NotYetSpawned);
 }
 
 #[test]
+#[serial]
 fn test_player_spawn_state_variants() {
     assert_eq!(PlayerSpawnState::NotYetSpawned as u8, 0);
     assert_eq!(PlayerSpawnState::Respawn as u8, 1);
@@ -32,36 +37,42 @@ fn test_player_spawn_state_variants() {
 }
 
 #[test]
+#[serial]
 fn test_dialogue_state_default() {
     let state = DialogueState::default();
     assert_eq!(state, DialogueState::Game);
 }
 
 #[test]
+#[serial]
 fn test_dialogue_state_variants() {
     assert_eq!(DialogueState::Game as u8, 0);
     assert_eq!(DialogueState::Dialogue as u8, 1);
 }
 
 #[test]
+#[serial]
 fn test_loading_state_default() {
     let state = LoadingState::default();
     assert_eq!(state, LoadingState::LevelReady);
 }
 
 #[test]
+#[serial]
 fn test_loading_state_variants() {
     assert_eq!(LoadingState::LevelReady as u8, 0);
     assert_eq!(LoadingState::LevelLoading as u8, 1);
 }
 
 #[test]
+#[serial]
 fn test_location_default() {
     let location = Location::default();
     assert_eq!(location, Location::Test);
 }
 
 #[test]
+#[serial]
 fn test_location_variants() {
     assert_eq!(Location::Test as u8, 0);
     assert_eq!(Location::Greenhouse as u8, 1);
@@ -69,6 +80,7 @@ fn test_location_variants() {
 }
 
 #[test]
+#[serial]
 fn test_state_transitions() {
     let mut app = App::new();
     app.add_plugins(StatesPlugin)
@@ -94,6 +106,7 @@ fn test_state_transitions() {
 }
 
 #[test]
+#[serial]
 fn test_state_equality() {
     assert_eq!(GameState::InGame, GameState::InGame);
     assert_ne!(GameState::InGame, GameState::Loading);
@@ -112,6 +125,7 @@ fn test_state_equality() {
 }
 
 #[test]
+#[serial]
 fn test_state_clone() {
     let state1 = GameState::Loading;
     let state2 = state1.clone();

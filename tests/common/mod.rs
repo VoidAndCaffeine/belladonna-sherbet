@@ -1,29 +1,24 @@
 use std::path::PathBuf;
-use std::time::Duration;
-use std::cell::RefCell;
 
 use avian3d::PhysicsPlugins;
-use bevy::app::{App, ScheduleRunnerPlugin};
+use bevy::app::App;
 use bevy::asset::AssetPlugin;
+use bevy::gltf::GltfPlugin;
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
-use bevy::time::TimePlugin;
+use bevy::render::RenderPlugin;
 use bevy_persistent::Persistent;
 use bevy_skein::SkeinPlugin;
 use bevy_state::app::StatesPlugin;
-use bevy_tnua::TnuaControllerPlugin;
-use bevy_tnua_avian3d::TnuaAvian3dPlugin;
-use bevy_yarnspinner::prelude::YarnSpinnerPlugin;
-use bevy_yarnspinner_example_dialogue_view::ExampleYarnSpinnerDialogueViewPlugin;
+use bevy_world_serialization::WorldAsset;
 use tempfile::TempDir;
 
 use belladonna_sherbet::plugins::camera::CameraPlugin;
-use belladonna_sherbet::plugins::player::{ControlScheme, KeyboardKeyBindings, PlayerPlugin};
+use belladonna_sherbet::plugins::player::{KeyboardKeyBindings, PlayerPlugin};
 use belladonna_sherbet::plugins::asset_management::AssetManagerPlugin;
 use belladonna_sherbet::plugins::location_change::LocationChangePlugin;
-use belladonna_sherbet::plugins::yarn::YarnPlugin;
 use belladonna_sherbet::plugins::save::{SaveData, SavePlugin};
-use belladonna_sherbet::plugins::game::{DataPath, GamePlugins, GameState};
+use belladonna_sherbet::plugins::game::{DataPath, GameState};
 use belladonna_sherbet::plugins::player::PlayerSpawnState;
 
 const TEST_YARN: &str = r#"
@@ -35,15 +30,12 @@ TestNode:
     -> END
 "#;
 
-thread_local! {
-    static TEST_APP: RefCell<Option<TestApp>> = RefCell::new(None);
-}
-
 pub struct TestApp {
     pub app: App,
     pub temp_dir: Option<TempDir>,
 }
 
+#[allow(dead_code)]
 impl TestApp {
     pub fn new() -> Self {
         let temp_dir = tempfile::tempdir().expect("Failed to create temp dir");
@@ -74,14 +66,10 @@ impl TestApp {
                 ..default()
             },
             LogPlugin::default(),
-            TimePlugin,
-            ScheduleRunnerPlugin::run_loop(Duration::from_secs_f64(1.0 / 60.0)),
+            GltfPlugin::default(),
+            RenderPlugin::default(),
             PhysicsPlugins::default(),
-            TnuaControllerPlugin::<ControlScheme>::new(FixedUpdate),
-            TnuaAvian3dPlugin::new(FixedUpdate),
             SkeinPlugin::default(),
-            YarnSpinnerPlugin::new(),
-            ExampleYarnSpinnerDialogueViewPlugin::new(),
             StatesPlugin,
         ))
         .add_plugins((
@@ -89,10 +77,11 @@ impl TestApp {
             PlayerPlugin,
             AssetManagerPlugin,
             LocationChangePlugin,
-            YarnPlugin,
             SavePlugin,
-            GamePlugins,
         ));
+
+        app.init_asset::<WorldAsset>();
+        app.init_asset::<Mesh>();
 
         app.insert_resource(DataPath { path: data_path.clone() })
             .init_state::<GameState>()
@@ -124,21 +113,6 @@ impl TestApp {
             );
 
         Self { app, temp_dir: Some(temp_dir) }
-    }
-
-    /// Get or create the shared test app (for integration tests that run serially)
-    pub fn shared() -> &'static mut TestApp {
-        TEST_APP.with(|cell| {
-            let mut borrow = cell.borrow_mut();
-            if borrow.is_none() {
-                *borrow = Some(Self::new());
-            }
-            // SAFETY: We're using thread_local with --test-threads=1, so this is safe
-            // The borrow_mut() returns a RefMut, we need to extend its lifetime
-            // This is safe because tests run sequentially with --test-threads=1
-            let ptr = borrow.as_mut().unwrap() as *mut TestApp;
-            unsafe { &mut *ptr }
-        })
     }
 
     pub fn advance_frames(&mut self, frames: u32) {

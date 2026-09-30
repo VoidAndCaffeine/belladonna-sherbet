@@ -1,3 +1,4 @@
+use serial_test::serial;
 use bevy::prelude::*;
 use bevy_state::app::StatesPlugin;
 use bevy_persistent::Persistent;
@@ -45,6 +46,7 @@ fn run_fixed_update(app: &mut App) {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_no_input() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();
@@ -58,6 +60,7 @@ fn test_apply_controls_no_input() {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_forward() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();
@@ -72,6 +75,7 @@ fn test_apply_controls_forward() {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_backward() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();
@@ -85,6 +89,7 @@ fn test_apply_controls_backward() {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_left() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();
@@ -98,6 +103,7 @@ fn test_apply_controls_left() {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_right() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();
@@ -111,6 +117,7 @@ fn test_apply_controls_right() {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_diagonal_normalized() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();
@@ -126,6 +133,7 @@ fn test_apply_controls_diagonal_normalized() {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_opposing_keys_cancel() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();
@@ -140,6 +148,7 @@ fn test_apply_controls_opposing_keys_cancel() {
 }
 
 #[test]
+#[serial]
 fn test_apply_controls_arrow_keys() {
     let (mut app, _temp_dir) = setup_test_app();
     let controller = TnuaController::<ControlScheme>::default();

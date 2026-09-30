@@ -1,7 +1,9 @@
+use serial_test::serial;
 use belladonna_sherbet::plugins::player::KeyboardKeyBindings;
 use bevy::prelude::*;
 
 #[test]
+#[serial]
 fn test_keyboard_keybindings_default() {
     let bindings = KeyboardKeyBindings {
         up: [KeyCode::KeyW, KeyCode::ArrowUp],
@@ -17,6 +19,7 @@ fn test_keyboard_keybindings_default() {
 }
 
 #[test]
+#[serial]
 fn test_keyboard_keybindings_serialization() {
     let bindings = KeyboardKeyBindings {
         up: [KeyCode::KeyW, KeyCode::ArrowUp],
@@ -35,6 +38,7 @@ fn test_keyboard_keybindings_serialization() {
 }
 
 #[test]
+#[serial]
 fn test_keyboard_keybindings_custom() {
     let bindings = KeyboardKeyBindings {
         up: [KeyCode::KeyI, KeyCode::ArrowUp],
@@ -50,6 +54,7 @@ fn test_keyboard_keybindings_custom() {
 }
 
 #[test]
+#[serial]
 fn test_keyboard_keybindings_toml_roundtrip() {
     let original = KeyboardKeyBindings {
         up: [KeyCode::KeyW, KeyCode::ArrowUp],

@@ -1,3 +1,4 @@
+use serial_test::serial;
 mod common;
 use common::TestApp;
 use belladonna_sherbet::plugins::player::{Player, PlayerSpawnState};
@@ -7,9 +8,9 @@ use bevy_tnua::prelude::*;
 use avian3d::prelude::{RigidBody, Collider, LockedAxes};
 
 #[test]
+#[serial]
 fn test_player_spawn_state_transitions() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
 
     // Initially NotYetSpawned
@@ -23,9 +24,9 @@ fn test_player_spawn_state_transitions() {
 }
 
 #[test]
+#[serial]
 fn test_player_spawn_has_required_components() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);
@@ -44,9 +45,9 @@ fn test_player_spawn_has_required_components() {
 }
 
 #[test]
+#[serial]
 fn test_camera_spawns_alongside_player() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);
@@ -60,9 +61,9 @@ fn test_camera_spawns_alongside_player() {
 }
 
 #[test]
+#[serial]
 fn test_player_spawn_position() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);
@@ -75,9 +76,9 @@ fn test_player_spawn_position() {
 }
 
 #[test]
+#[serial]
 fn test_player_respawn_state() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);

@@ -1,11 +1,11 @@
 mod common;
 use common::TestApp;
-use bevy::prelude::*;
+use serial_test::serial;
 
 #[test]
+#[serial]
 fn test_camera_spawns_with_player_camera_component() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);
@@ -15,9 +15,9 @@ fn test_camera_spawns_with_player_camera_component() {
 }
 
 #[test]
+#[serial]
 fn test_camera_follows_player_position() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);
@@ -33,9 +33,9 @@ fn test_camera_follows_player_position() {
 }
 
 #[test]
+#[serial]
 fn test_camera_looks_at_player() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);
@@ -51,9 +51,9 @@ fn test_camera_looks_at_player() {
 }
 
 #[test]
+#[serial]
 fn test_camera_maintains_distance() {
-    let mut test_app = TestApp::shared();
-    test_app.reset();
+    let mut test_app = TestApp::new();
     
     test_app.spawn_player();
     test_app.advance_frames(2);

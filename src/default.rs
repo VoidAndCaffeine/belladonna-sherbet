@@ -1,5 +1,5 @@
 use avian3d::PhysicsPlugins;
-use bevy::prelude::{Plugin, App, DefaultPlugins, FixedUpdate};
+use bevy::prelude::{Plugin, App, DefaultPlugins};
 
 pub struct Default;
 impl Plugin for Default {
