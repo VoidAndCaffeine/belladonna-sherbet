@@ -1,12 +1,12 @@
 mod common;
 use common::TestApp;
 use bevy::prelude::*;
-use serial_test::serial;
 
 #[test]
-#[serial]
 fn test_camera_spawns_with_player_camera_component() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(2);
 
@@ -15,16 +15,16 @@ fn test_camera_spawns_with_player_camera_component() {
 }
 
 #[test]
-#[serial]
 fn test_camera_follows_player_position() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(2);
 
     let player_transform = test_app.get_player_transform().expect("Player should exist");
     let camera_transform = test_app.get_camera_transform().expect("Camera should exist");
 
-    // Camera should be at player position + offset
     let expected_offset = belladonna_sherbet::plugins::camera::CAMERA_DISTANCE * belladonna_sherbet::plugins::camera::CAMERA_VECTOR;
     let expected_pos = player_transform.translation + expected_offset;
 
@@ -33,28 +33,28 @@ fn test_camera_follows_player_position() {
 }
 
 #[test]
-#[serial]
 fn test_camera_looks_at_player() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(2);
 
     let player_transform = test_app.get_player_transform().expect("Player should exist");
     let camera_transform = test_app.get_camera_transform().expect("Camera should exist");
 
-    // Camera forward vector should point toward player
     let to_player = (player_transform.translation - camera_transform.translation).normalize();
     let camera_forward = camera_transform.forward().normalize();
 
-    // Dot product should be close to 1 (same direction)
     let dot = to_player.dot(camera_forward);
     assert!(dot > 0.99, "Camera should look at player. Dot product: {}", dot);
 }
 
 #[test]
-#[serial]
 fn test_camera_maintains_distance() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(2);
 

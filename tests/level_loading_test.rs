@@ -1,8 +1,8 @@
 mod common;
 use common::TestApp;
-use belladonna_sherbet::plugins::game::{GameState, DataPath};
-use belladonna_sherbet::plugins::asset_management::{LoadingState, LoadingData};
-use belladonna_sherbet::plugins::location_change::{Location, LocationChange, LocationChangeInfo, LocationChangeDest};
+use belladonna_sherbet::plugins::game::GameState;
+use belladonna_sherbet::plugins::asset_management::LoadingState;
+use belladonna_sherbet::plugins::location_change::{Location, LocationChange, LocationChangeInfo};
 use belladonna_sherbet::plugins::player::{Player, PlayerSpawnState};
 use bevy::prelude::*;
 use avian3d::prelude::CollisionStart;
@@ -18,7 +18,9 @@ fn make_collision(collider1: Entity, collider2: Entity) -> CollisionStart {
 
 #[test]
 fn test_loading_state_transitions_on_location_change() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -32,8 +34,8 @@ fn test_loading_state_transitions_on_location_change() {
         destination: Location::Greenhouse,
     }).id();
 
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     // Trigger collision
     let collision = make_collision(trigger_entity, player_entity);
@@ -47,13 +49,15 @@ fn test_loading_state_transitions_on_location_change() {
 
 #[test]
 fn test_old_level_entities_despawned_on_location_change() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
     // Count initial level entities
-    let initial_level_entities: Vec<_> = test_app.app.world().query_filtered::<Entity, With<belladonna_sherbet::plugins::asset_management::LevelComponents>>()
-        .iter(test_app.app.world()).collect();
+    let initial_level_entities: Vec<_> = test_app.app.world_mut().query_filtered::<Entity, With<belladonna_sherbet::plugins::asset_management::LevelComponents>>()
+        .iter(test_app.app.world_mut()).collect();
     assert!(!initial_level_entities.is_empty(), "Should have initial level entities");
 
     // Trigger location change
@@ -62,16 +66,16 @@ fn test_old_level_entities_despawned_on_location_change() {
         destination: Location::Greenhouse,
     }).id();
 
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision = make_collision(trigger_entity, player_entity);
     test_app.app.world_mut().trigger(collision);
     test_app.advance_frames(10);
 
     // Old level entities should be despawned
-    let remaining_level_entities: Vec<_> = test_app.app.world().query_filtered::<Entity, With<belladonna_sherbet::plugins::asset_management::LevelComponents>>()
-        .iter(test_app.app.world()).collect();
+    let _remaining_level_entities: Vec<_> = test_app.app.world_mut().query_filtered::<Entity, With<belladonna_sherbet::plugins::asset_management::LevelComponents>>()
+        .iter(test_app.app.world_mut()).collect();
 
     // The old level entities should be gone (though new ones may be loading)
     // We can't easily distinguish old vs new without more setup, but we can verify
@@ -81,7 +85,9 @@ fn test_old_level_entities_despawned_on_location_change() {
 
 #[test]
 fn test_location_change_resource_updated() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -90,8 +96,8 @@ fn test_location_change_resource_updated() {
         destination: Location::Greenhouse,
     }).id();
 
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision = make_collision(trigger_entity, player_entity);
     test_app.app.world_mut().trigger(collision);
@@ -104,7 +110,9 @@ fn test_location_change_resource_updated() {
 
 #[test]
 fn test_player_respawn_state_on_location_change() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -115,8 +123,8 @@ fn test_player_respawn_state_on_location_change() {
         destination: Location::Greenhouse,
     }).id();
 
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision = make_collision(trigger_entity, player_entity);
     test_app.app.world_mut().trigger(collision);

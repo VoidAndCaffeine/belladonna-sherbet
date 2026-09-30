@@ -16,7 +16,9 @@ fn make_collision(collider1: Entity, collider2: Entity) -> CollisionStart {
 
 #[test]
 fn test_location_transition_on_player_collision() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -25,8 +27,8 @@ fn test_location_transition_on_player_collision() {
         destination: Location::Greenhouse,
     }).id();
 
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision = make_collision(trigger_entity, player_entity);
     test_app.app.world_mut().trigger(collision);
@@ -38,7 +40,9 @@ fn test_location_transition_on_player_collision() {
 
 #[test]
 fn test_location_transition_ignores_non_player() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -59,7 +63,9 @@ fn test_location_transition_ignores_non_player() {
 
 #[test]
 fn test_location_transition_updates_origin() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -68,8 +74,8 @@ fn test_location_transition_updates_origin() {
         destination: Location::Greenhouse,
     }).id();
 
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision1 = make_collision(trigger1, player_entity);
     test_app.app.world_mut().trigger(collision1);
@@ -96,13 +102,15 @@ fn test_location_transition_updates_origin() {
 
 #[test]
 fn test_location_transition_with_missing_info_ignored() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
     let trigger_entity = test_app.app.world_mut().spawn_empty().id();
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision = make_collision(trigger_entity, player_entity);
     test_app.app.world_mut().trigger(collision);

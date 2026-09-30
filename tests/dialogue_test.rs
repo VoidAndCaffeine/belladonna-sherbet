@@ -16,7 +16,9 @@ fn make_collision(collider1: Entity, collider2: Entity) -> CollisionStart {
 
 #[test]
 fn test_dialogue_state_transition_on_yarn_collision() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -26,8 +28,8 @@ fn test_dialogue_state_transition_on_yarn_collision() {
 
     // Create YarnNode trigger
     let trigger_entity = test_app.app.world_mut().spawn(YarnNode::new("TestNode")).id();
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision = make_collision(trigger_entity, player_entity);
     test_app.app.world_mut().trigger(collision);
@@ -39,7 +41,9 @@ fn test_dialogue_state_transition_on_yarn_collision() {
 
 #[test]
 fn test_dialogue_ignores_non_player_collision() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     
     test_app.spawn_player();
     test_app.advance_frames(5);
@@ -56,14 +60,16 @@ fn test_dialogue_ignores_non_player_collision() {
 
 #[test]
 fn test_dialogue_ignores_missing_yarn_node() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     
     test_app.spawn_player();
     test_app.advance_frames(5);
 
     let trigger_entity = test_app.app.world_mut().spawn_empty().id();
-    let player_entity = test_app.app.world().query_filtered::<Entity, With<Player>>()
-        .single(test_app.app.world()).unwrap();
+    let player_entity = test_app.app.world_mut().query_filtered::<Entity, With<Player>>()
+        .single(test_app.app.world_mut()).unwrap();
 
     let collision = make_collision(trigger_entity, player_entity);
     test_app.app.world_mut().trigger(collision);

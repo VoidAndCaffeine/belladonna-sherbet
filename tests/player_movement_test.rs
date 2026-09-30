@@ -4,7 +4,9 @@ use bevy::prelude::*;
 
 #[test]
 fn test_player_moves_forward_with_w_key() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -22,7 +24,9 @@ fn test_player_moves_forward_with_w_key() {
 
 #[test]
 fn test_player_moves_backward_with_s_key() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -39,7 +43,9 @@ fn test_player_moves_backward_with_s_key() {
 
 #[test]
 fn test_player_moves_left_with_a_key() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -56,7 +62,9 @@ fn test_player_moves_left_with_a_key() {
 
 #[test]
 fn test_player_moves_right_with_d_key() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -73,7 +81,9 @@ fn test_player_moves_right_with_d_key() {
 
 #[test]
 fn test_player_stops_when_keys_released() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -95,7 +105,9 @@ fn test_player_stops_when_keys_released() {
 
 #[test]
 fn test_movement_only_in_game_state() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 

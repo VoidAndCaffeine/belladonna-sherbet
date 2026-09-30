@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 use std::time::Duration;
-use std::sync::OnceLock;
+use std::cell::RefCell;
 
 use avian3d::PhysicsPlugins;
 use bevy::app::{App, ScheduleRunnerPlugin};
@@ -35,11 +35,13 @@ TestNode:
     -> END
 "#;
 
-static PLUGINS_ADDED: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+thread_local! {
+    static TEST_APP: RefCell<Option<TestApp>> = RefCell::new(None);
+}
 
 pub struct TestApp {
     pub app: App,
-    temp_dir: Option<TempDir>,
+    pub temp_dir: Option<TempDir>,
 }
 
 impl TestApp {
@@ -65,34 +67,32 @@ impl TestApp {
 
         let mut app = App::new();
 
-        if !PLUGINS_ADDED.swap(true, std::sync::atomic::Ordering::SeqCst) {
-            app.add_plugins((
-                MinimalPlugins,
-                AssetPlugin {
-                    file_path: temp_dir.path().to_string_lossy().to_string(),
-                    ..default()
-                },
-                LogPlugin::default(),
-                TimePlugin,
-                ScheduleRunnerPlugin::run_loop(Duration::from_secs_f64(1.0 / 60.0)),
-                PhysicsPlugins::default(),
-                TnuaControllerPlugin::<ControlScheme>::new(FixedUpdate),
-                TnuaAvian3dPlugin::new(FixedUpdate),
-                SkeinPlugin::default(),
-                YarnSpinnerPlugin::new(),
-                ExampleYarnSpinnerDialogueViewPlugin::new(),
-                StatesPlugin,
-            ))
-            .add_plugins((
-                CameraPlugin,
-                PlayerPlugin,
-                AssetManagerPlugin,
-                LocationChangePlugin,
-                YarnPlugin,
-                SavePlugin,
-                GamePlugins,
-            ));
-        }
+        app.add_plugins((
+            MinimalPlugins,
+            AssetPlugin {
+                file_path: temp_dir.path().to_string_lossy().to_string(),
+                ..default()
+            },
+            LogPlugin::default(),
+            TimePlugin,
+            ScheduleRunnerPlugin::run_loop(Duration::from_secs_f64(1.0 / 60.0)),
+            PhysicsPlugins::default(),
+            TnuaControllerPlugin::<ControlScheme>::new(FixedUpdate),
+            TnuaAvian3dPlugin::new(FixedUpdate),
+            SkeinPlugin::default(),
+            YarnSpinnerPlugin::new(),
+            ExampleYarnSpinnerDialogueViewPlugin::new(),
+            StatesPlugin,
+        ))
+        .add_plugins((
+            CameraPlugin,
+            PlayerPlugin,
+            AssetManagerPlugin,
+            LocationChangePlugin,
+            YarnPlugin,
+            SavePlugin,
+            GamePlugins,
+        ));
 
         app.insert_resource(DataPath { path: data_path.clone() })
             .init_state::<GameState>()
@@ -124,6 +124,21 @@ impl TestApp {
             );
 
         Self { app, temp_dir: Some(temp_dir) }
+    }
+
+    /// Get or create the shared test app (for integration tests that run serially)
+    pub fn shared() -> &'static mut TestApp {
+        TEST_APP.with(|cell| {
+            let mut borrow = cell.borrow_mut();
+            if borrow.is_none() {
+                *borrow = Some(Self::new());
+            }
+            // SAFETY: We're using thread_local with --test-threads=1, so this is safe
+            // The borrow_mut() returns a RefMut, we need to extend its lifetime
+            // This is safe because tests run sequentially with --test-threads=1
+            let ptr = borrow.as_mut().unwrap() as *mut TestApp;
+            unsafe { &mut *ptr }
+        })
     }
 
     pub fn advance_frames(&mut self, frames: u32) {
@@ -181,6 +196,22 @@ impl TestApp {
 
     pub fn get_loading_state(&self) -> belladonna_sherbet::plugins::asset_management::LoadingState {
         self.app.world().resource::<State<belladonna_sherbet::plugins::asset_management::LoadingState>>().get().clone()
+    }
+
+    /// Reset the app state for the next test
+    pub fn reset(&mut self) {
+        // Clear all entities
+        let entities: Vec<_> = self.app.world_mut().query::<Entity>().iter(self.app.world()).collect();
+        for entity in entities {
+            self.app.world_mut().despawn(entity);
+        }
+        // Reset states
+        self.app.world_mut().resource_mut::<NextState<GameState>>().set(GameState::InGame);
+        self.app.world_mut().resource_mut::<NextState<PlayerSpawnState>>().set(PlayerSpawnState::NotYetSpawned);
+        self.app.world_mut().resource_mut::<NextState<belladonna_sherbet::plugins::location_change::Location>>().set(belladonna_sherbet::plugins::location_change::Location::Test);
+        self.app.world_mut().resource_mut::<NextState<belladonna_sherbet::plugins::yarn::DialogueState>>().set(belladonna_sherbet::plugins::yarn::DialogueState::Game);
+        self.app.world_mut().resource_mut::<NextState<belladonna_sherbet::plugins::asset_management::LoadingState>>().set(belladonna_sherbet::plugins::asset_management::LoadingState::LevelReady);
+        self.advance_frames(2);
     }
 }
 

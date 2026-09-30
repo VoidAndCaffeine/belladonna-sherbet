@@ -26,13 +26,13 @@ pub enum DialogueState{
 }
 #[derive(Component,Reflect,Eq, PartialEq, Clone)]
 #[reflect(Component)]
-pub(crate) struct YarnNode {
-    pub(crate) yarn_node: String,
-    pub(crate) prompt: String,
+pub struct YarnNode {
+    pub yarn_node: String,
+    pub prompt: String,
 }
 
 impl YarnNode {
-    pub(crate) fn new(yarn_node: impl Into<String>) -> Self {
+    pub fn new(yarn_node: impl Into<String>) -> Self {
         Self {
             yarn_node: yarn_node.into(),
             ..default()

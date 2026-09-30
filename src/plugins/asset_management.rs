@@ -55,7 +55,7 @@ impl LoadingData {
 }
 
 #[derive(Component)]
-struct LevelComponents;
+pub struct LevelComponents;
 
 fn unload_current_level(
     mut commands: Commands,

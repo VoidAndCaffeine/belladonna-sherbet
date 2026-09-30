@@ -2,16 +2,17 @@ mod common;
 use common::TestApp;
 use belladonna_sherbet::plugins::save::SaveData;
 use bevy::prelude::*;
-use tempfile::TempDir;
 use std::fs;
 
 #[test]
 fn test_quicksave_creates_save_file() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
-    let saves_dir = test_app.temp_dir.path().join("Coffee Constellations/Belladonna Sherbet/Saves");
+    let saves_dir = test_app.temp_dir.as_ref().expect("temp dir").path().join("Coffee Constellations/Belladonna Sherbet/Saves");
     let save_path = saves_dir.join("save.toml");
 
     // File should not exist initially
@@ -27,7 +28,9 @@ fn test_quicksave_creates_save_file() {
 
 #[test]
 fn test_quicksave_updates_version() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -40,7 +43,9 @@ fn test_quicksave_updates_version() {
 
 #[test]
 fn test_quicksave_increments_counter() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
@@ -62,14 +67,16 @@ fn test_quicksave_increments_counter() {
 
 #[test]
 fn test_quicksave_persists_to_disk() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
     test_app.press_key(KeyCode::F5);
     test_app.advance_frames(2);
 
-    let saves_dir = test_app.temp_dir.path().join("Coffee Constellations/Belladonna Sherbet/Saves");
+    let saves_dir = test_app.temp_dir.as_ref().expect("temp dir").path().join("Coffee Constellations/Belladonna Sherbet/Saves");
     let save_path = saves_dir.join("save.toml");
 
     let content = fs::read_to_string(&save_path).expect("Failed to read save file");
@@ -79,7 +86,9 @@ fn test_quicksave_persists_to_disk() {
 
 #[test]
 fn test_quicksave_works_in_any_state() {
-    let mut test_app = TestApp::new();
+    let mut test_app = TestApp::shared();
+    test_app.reset();
+    
     test_app.spawn_player();
     test_app.advance_frames(5);
 
