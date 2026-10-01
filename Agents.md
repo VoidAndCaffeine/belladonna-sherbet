@@ -33,12 +33,7 @@
 - **Minimal app** with `StatesPlugin` + required resources for system tests
 - **Threshold assertions** for physics: `assert!(pos.x > 0.1)` not exact equality
 - **`serial_test::serial`** for tests sharing global plugin state
-
-### Integration Test Patterns
-- **`TestApp` helper** for spawn/advance/query patterns
-- **Collision events** constructed manually: `CollisionStart { collider1, collider2, body1: None, body2: None }`
-- **Trigger via** `app.world_mut().trigger(event)` not `send_event`
-- **State transitions** via `NextState` resource + `advance_frames(2)`
+- **No window** the camera requires a window and will panic without it. Do not write tests requiring the camera directly or indirectly through loading a player or level;
 
 ### Asset Handling
 - **Test assets** in `tests/test_assets/` (Yarn files, minimal GLTF)
