@@ -1,7 +1,7 @@
 use avian3d::prelude::CollisionStart;
 use bevy::prelude::*;
 use bevy_yarnspinner::prelude::*;
-use bevy_yarnspinner_example_dialogue_view::prelude::*;
+use dialogue_view::prelude::*;
 use crate::plugins::player::Player;
 
 pub struct YarnPlugin;

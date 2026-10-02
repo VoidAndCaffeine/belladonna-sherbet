@@ -1,0 +1,23 @@
+[package]
+name = "dialogue_view"
+version = "0.1.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+description = "Example dialog view for Bevy Yarn Spinner for Rust"
+
+[dependencies]
+bevy_yarnspinner = "0.9.0"
+unicode-segmentation = "1"
+
+[dependencies.bevy]
+version = "0.19"
+default-features = false
+features = [
+    "bevy_ui",
+    "bevy_ui_render",
+    "bevy_text",
+    "bevy_render",
+    "png",
+    "bevy_asset",
+    "bevy_window",
+]
